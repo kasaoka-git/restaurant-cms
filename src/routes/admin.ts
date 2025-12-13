@@ -441,10 +441,16 @@ app.get('/store-info', requireAuth, async (c) => {
         </div>
 
         <script>
-          // Initialize logo uploader
-          setTimeout(() => addSimpleUploader('logo-url', { acceptVideos: false }), 100);
-          // Initialize favicon uploader
-          setTimeout(() => addSimpleUploader('favicon-url', { acceptVideos: false }), 100);
+          // Initialize logo uploader with 3MB limit
+          setTimeout(() => addSimpleUploader('logo-url', { 
+            acceptVideos: false,
+            maxSize: 3 * 1024 * 1024 // 3MB
+          }), 100);
+          // Initialize favicon uploader with 3MB limit
+          setTimeout(() => addSimpleUploader('favicon-url', { 
+            acceptVideos: false,
+            maxSize: 3 * 1024 * 1024 // 3MB
+          }), 100);
 
           document.getElementById('store-info-form').addEventListener('submit', async (e) => {
             e.preventDefault();

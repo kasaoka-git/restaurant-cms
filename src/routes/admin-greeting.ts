@@ -34,7 +34,7 @@ app.get('/', requireAuth, async (c) => {
 
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-2">料理長の写真</label>
-                    <p class="text-xs text-gray-500 mb-2">推奨サイズ: 800px × 800px（正方形） | 形式: JPEG/PNG | 最大: 10MB</p>
+                    <p class="text-xs text-gray-500 mb-2">推奨サイズ: 800px × 800px（正方形） | 形式: JPEG/PNG | <strong class="text-red-600">最大: 3MB</strong></p>
                     
                     <!-- Tab Navigation -->
                     <div class="flex space-x-2 mb-4 border-b">
@@ -96,8 +96,11 @@ app.get('/', requireAuth, async (c) => {
           messageTextarea.addEventListener('input', updateCharCount);
           updateCharCount();
 
-          // Initialize uploader
-          addSimpleUploader('image-url', { acceptVideos: false });
+          // Initialize uploader with 3MB limit
+          addSimpleUploader('image-url', { 
+            acceptVideos: false,
+            maxSize: 3 * 1024 * 1024 // 3MB
+          });
 
           // Tab switching
           function switchGreetingTab(tab) {
