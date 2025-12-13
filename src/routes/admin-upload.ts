@@ -5,7 +5,7 @@ import { requireAuth } from '../utils/auth'
 const app = new Hono<{ Bindings: Bindings }>()
 
 // Upload image/video to R2
-app.post('/api', requireAuth, async (c) => {
+app.post('/', requireAuth, async (c) => {
   try {
     const formData = await c.req.formData()
     const file = formData.get('file') as File
@@ -77,7 +77,7 @@ app.post('/api', requireAuth, async (c) => {
 })
 
 // Delete file from R2
-app.delete('/api/:key', requireAuth, async (c) => {
+app.delete('/:key', requireAuth, async (c) => {
   try {
     const key = c.req.param('key')
     

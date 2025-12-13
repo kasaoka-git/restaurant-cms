@@ -95,7 +95,7 @@ app.get('/', requireAuth, async (c) => {
 })
 
 // API: Save greeting
-app.post('/api', requireAuth, async (c) => {
+app.post('/', requireAuth, async (c) => {
   const data = await c.req.json();
   
   // Check if greeting exists

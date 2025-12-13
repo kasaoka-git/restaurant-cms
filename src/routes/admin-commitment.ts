@@ -266,7 +266,7 @@ app.get('/', requireAuth, async (c) => {
 })
 
 // API: Add new commitment item
-app.post('/api', requireAuth, async (c) => {
+app.post('/', requireAuth, async (c) => {
   const data = await c.req.json();
   
   // Check if already 6 items
@@ -294,7 +294,7 @@ app.post('/api', requireAuth, async (c) => {
 })
 
 // API: Update commitment item
-app.put('/api/:id', requireAuth, async (c) => {
+app.put('/:id', requireAuth, async (c) => {
   const id = c.req.param('id');
   const data = await c.req.json();
   
@@ -311,7 +311,7 @@ app.put('/api/:id', requireAuth, async (c) => {
 })
 
 // API: Toggle visibility
-app.patch('/api/:id/visibility', requireAuth, async (c) => {
+app.patch('/:id/visibility', requireAuth, async (c) => {
   const id = c.req.param('id');
   const { is_visible } = await c.req.json();
   
@@ -323,7 +323,7 @@ app.patch('/api/:id/visibility', requireAuth, async (c) => {
 })
 
 // API: Delete commitment item
-app.delete('/api/:id', requireAuth, async (c) => {
+app.delete('/:id', requireAuth, async (c) => {
   const id = c.req.param('id');
   
   try {
@@ -357,7 +357,7 @@ app.delete('/api/:id', requireAuth, async (c) => {
 })
 
 // API: Reorder commitment items
-app.post('/api/reorder', requireAuth, async (c) => {
+app.post('/reorder', requireAuth, async (c) => {
   const { updates } = await c.req.json();
   
   for (const update of updates) {

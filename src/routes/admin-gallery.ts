@@ -219,7 +219,7 @@ app.get('/', requireAuth, async (c) => {
 })
 
 // API: Add new gallery image
-app.post('/api', requireAuth, async (c) => {
+app.post('/', requireAuth, async (c) => {
   const data = await c.req.json();
   
   const maxOrder = await c.env.DB.prepare(
@@ -237,7 +237,7 @@ app.post('/api', requireAuth, async (c) => {
 })
 
 // API: Update gallery image
-app.put('/api/:id', requireAuth, async (c) => {
+app.put('/:id', requireAuth, async (c) => {
   const id = c.req.param('id');
   const data = await c.req.json();
   
@@ -251,7 +251,7 @@ app.put('/api/:id', requireAuth, async (c) => {
 })
 
 // API: Delete gallery image
-app.delete('/api/:id', requireAuth, async (c) => {
+app.delete('/:id', requireAuth, async (c) => {
   const id = c.req.param('id');
   
   await c.env.DB.prepare('DELETE FROM gallery WHERE id = ?').bind(id).run();
@@ -271,7 +271,7 @@ app.delete('/api/:id', requireAuth, async (c) => {
 })
 
 // API: Reorder gallery images
-app.post('/api/reorder', requireAuth, async (c) => {
+app.post('/reorder', requireAuth, async (c) => {
   const { updates } = await c.req.json();
   
   for (const update of updates) {

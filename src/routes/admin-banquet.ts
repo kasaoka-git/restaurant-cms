@@ -241,7 +241,7 @@ app.get('/', requireAuth, async (c) => {
 })
 
 // API: Add new banquet course
-app.post('/api', requireAuth, async (c) => {
+app.post('/', requireAuth, async (c) => {
   const data = await c.req.json();
   
   const maxOrder = await c.env.DB.prepare(
@@ -259,7 +259,7 @@ app.post('/api', requireAuth, async (c) => {
 })
 
 // API: Update banquet course
-app.put('/api/:id', requireAuth, async (c) => {
+app.put('/:id', requireAuth, async (c) => {
   const id = c.req.param('id');
   const data = await c.req.json();
   
@@ -273,34 +273,47 @@ app.put('/api/:id', requireAuth, async (c) => {
 })
 
 // API: Delete banquet course
-app.delete('/api/:id', requireAuth, async (c) => {
+app.delete('/:id', requireAuth, async (c) => {
   const id = c.req.param('id');
   
-  await c.env.DB.prepare('DELETE FROM banquet_courses WHERE id = ?').bind(id).run();
-  
-  // Reorder remaining items
-  const { results } = await c.env.DB.prepare(
-    'SELECT id FROM banquet_courses ORDER BY display_order ASC'
-  ).all();
-  
-  for (let i = 0; i < results.length; i++) {
-    await c.env.DB.prepare(
-      'UPDATE banquet_courses SET display_order = ? WHERE id = ?'
-    ).bind(i + 1, results[i].id).run();
+  try {
+    const deleteResult = await c.env.DB.prepare('DELETE FROM banquet_courses WHERE id = ?').bind(id).run();
+    
+    if (!deleteResult.success) {
+      return c.json({ success: false, message: '削除に失敗しました' }, 500);
+    }
+    
+    // Get remaining items and reorder using batch
+    const { results } = await c.env.DB.prepare(
+      'SELECT id FROM banquet_courses ORDER BY display_order ASC'
+    ).all();
+    
+    if (results && results.length > 0) {
+      const batch = results.map((item, index) => 
+        c.env.DB.prepare('UPDATE banquet_courses SET display_order = ? WHERE id = ?')
+          .bind(index + 1, item.id)
+      );
+      
+      await c.env.DB.batch(batch);
+    }
+    
+    return c.json({ success: true });
+  } catch (error) {
+    console.error('Delete error:', error);
+    return c.json({ success: false, message: error.message }, 500);
   }
-  
-  return c.json({ success: true });
 })
 
 // API: Reorder banquet courses
-app.post('/api/reorder', requireAuth, async (c) => {
+app.post('/reorder', requireAuth, async (c) => {
   const { updates } = await c.req.json();
   
-  for (const update of updates) {
-    await c.env.DB.prepare(
-      'UPDATE banquet_courses SET display_order = ? WHERE id = ?'
-    ).bind(update.display_order, update.id).run();
-  }
+  const batch = updates.map(update => 
+    c.env.DB.prepare('UPDATE banquet_courses SET display_order = ? WHERE id = ?')
+      .bind(update.display_order, update.id)
+  );
+  
+  await c.env.DB.batch(batch);
   
   return c.json({ success: true });
 })

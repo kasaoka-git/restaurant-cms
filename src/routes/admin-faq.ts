@@ -216,7 +216,7 @@ app.get('/', requireAuth, async (c) => {
 })
 
 // API: Add new FAQ
-app.post('/api', requireAuth, async (c) => {
+app.post('/', requireAuth, async (c) => {
   const data = await c.req.json();
   
   const maxOrder = await c.env.DB.prepare(
@@ -234,7 +234,7 @@ app.post('/api', requireAuth, async (c) => {
 })
 
 // API: Update FAQ
-app.put('/api/:id', requireAuth, async (c) => {
+app.put('/:id', requireAuth, async (c) => {
   const id = c.req.param('id');
   const data = await c.req.json();
   
@@ -246,7 +246,7 @@ app.put('/api/:id', requireAuth, async (c) => {
 })
 
 // API: Delete FAQ
-app.delete('/api/:id', requireAuth, async (c) => {
+app.delete('/:id', requireAuth, async (c) => {
   const id = c.req.param('id');
   
   await c.env.DB.prepare('DELETE FROM faq WHERE id = ?').bind(id).run();
@@ -266,7 +266,7 @@ app.delete('/api/:id', requireAuth, async (c) => {
 })
 
 // API: Reorder FAQs
-app.post('/api/reorder', requireAuth, async (c) => {
+app.post('/reorder', requireAuth, async (c) => {
   const { updates } = await c.req.json();
   
   for (const update of updates) {

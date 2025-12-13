@@ -211,7 +211,7 @@ app.get('/', requireAuth, async (c) => {
 })
 
 // API: Add new news
-app.post('/api', requireAuth, async (c) => {
+app.post('/', requireAuth, async (c) => {
   const data = await c.req.json();
   
   await c.env.DB.prepare(`
@@ -223,7 +223,7 @@ app.post('/api', requireAuth, async (c) => {
 })
 
 // API: Update news
-app.put('/api/:id', requireAuth, async (c) => {
+app.put('/:id', requireAuth, async (c) => {
   const id = c.req.param('id');
   const data = await c.req.json();
   
@@ -237,7 +237,7 @@ app.put('/api/:id', requireAuth, async (c) => {
 })
 
 // API: Delete news
-app.delete('/api/:id', requireAuth, async (c) => {
+app.delete('/:id', requireAuth, async (c) => {
   const id = c.req.param('id');
   
   await c.env.DB.prepare('DELETE FROM news WHERE id = ?').bind(id).run();

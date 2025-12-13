@@ -438,7 +438,7 @@ app.get('/', requireAuth, async (c) => {
 })
 
 // API: Get all main images
-app.get('/api', requireAuth, async (c) => {
+app.get('/', requireAuth, async (c) => {
   const { results } = await c.env.DB.prepare(
     'SELECT * FROM main_images ORDER BY display_order ASC'
   ).all();
@@ -447,7 +447,7 @@ app.get('/api', requireAuth, async (c) => {
 })
 
 // API: Add new main image
-app.post('/api', requireAuth, async (c) => {
+app.post('/', requireAuth, async (c) => {
   const data = await c.req.json();
   
   // Check if already 3 images
@@ -475,7 +475,7 @@ app.post('/api', requireAuth, async (c) => {
 })
 
 // API: Update main image
-app.put('/api/:id', requireAuth, async (c) => {
+app.put('/:id', requireAuth, async (c) => {
   const id = c.req.param('id');
   const data = await c.req.json();
   
@@ -491,7 +491,7 @@ app.put('/api/:id', requireAuth, async (c) => {
 })
 
 // API: Delete main image
-app.delete('/api/:id', requireAuth, async (c) => {
+app.delete('/:id', requireAuth, async (c) => {
   const id = c.req.param('id');
   
   await c.env.DB.prepare('DELETE FROM main_images WHERE id = ?').bind(id).run();
@@ -511,7 +511,7 @@ app.delete('/api/:id', requireAuth, async (c) => {
 })
 
 // API: Reorder main images
-app.post('/api/reorder', requireAuth, async (c) => {
+app.post('/reorder', requireAuth, async (c) => {
   const { updates } = await c.req.json();
   
   for (const update of updates) {

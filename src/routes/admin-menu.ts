@@ -207,7 +207,7 @@ app.get('/', requireAuth, async (c) => {
 })
 
 // API: Add new menu image
-app.post('/api', requireAuth, async (c) => {
+app.post('/', requireAuth, async (c) => {
   const data = await c.req.json();
   
   const { results } = await c.env.DB.prepare(
@@ -233,7 +233,7 @@ app.post('/api', requireAuth, async (c) => {
 })
 
 // API: Update menu image
-app.put('/api/:id', requireAuth, async (c) => {
+app.put('/:id', requireAuth, async (c) => {
   const id = c.req.param('id');
   const data = await c.req.json();
   
@@ -245,7 +245,7 @@ app.put('/api/:id', requireAuth, async (c) => {
 })
 
 // API: Delete menu image
-app.delete('/api/:id', requireAuth, async (c) => {
+app.delete('/:id', requireAuth, async (c) => {
   const id = c.req.param('id');
   
   await c.env.DB.prepare('DELETE FROM menu_images WHERE id = ?').bind(id).run();
@@ -264,7 +264,7 @@ app.delete('/api/:id', requireAuth, async (c) => {
 })
 
 // API: Reorder menu images
-app.post('/api/reorder', requireAuth, async (c) => {
+app.post('/reorder', requireAuth, async (c) => {
   const { updates } = await c.req.json();
   
   for (const update of updates) {
