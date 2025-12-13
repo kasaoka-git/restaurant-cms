@@ -326,20 +326,34 @@ app.patch('/api/:id/visibility', requireAuth, async (c) => {
 app.delete('/api/:id', requireAuth, async (c) => {
   const id = c.req.param('id');
   
-  await c.env.DB.prepare('DELETE FROM commitment_items WHERE id = ?').bind(id).run();
-  
-  // Reorder remaining items
-  const { results } = await c.env.DB.prepare(
-    'SELECT id FROM commitment_items ORDER BY display_order ASC'
-  ).all();
-  
-  for (let i = 0; i < results.length; i++) {
-    await c.env.DB.prepare(
-      'UPDATE commitment_items SET display_order = ? WHERE id = ?'
-    ).bind(i + 1, results[i].id).run();
+  try {
+    // Delete the item
+    const deleteResult = await c.env.DB.prepare('DELETE FROM commitment_items WHERE id = ?').bind(id).run();
+    
+    if (!deleteResult.success) {
+      return c.json({ success: false, message: '削除に失敗しました' }, 500);
+    }
+    
+    // Get remaining items and reorder
+    const { results } = await c.env.DB.prepare(
+      'SELECT id FROM commitment_items ORDER BY display_order ASC'
+    ).all();
+    
+    // Batch update for better performance
+    if (results && results.length > 0) {
+      const batch = results.map((item, index) => 
+        c.env.DB.prepare('UPDATE commitment_items SET display_order = ? WHERE id = ?')
+          .bind(index + 1, item.id)
+      );
+      
+      await c.env.DB.batch(batch);
+    }
+    
+    return c.json({ success: true });
+  } catch (error) {
+    console.error('Delete error:', error);
+    return c.json({ success: false, message: error.message }, 500);
   }
-  
-  return c.json({ success: true });
 })
 
 // API: Reorder commitment items

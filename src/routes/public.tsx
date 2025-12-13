@@ -32,7 +32,7 @@ app.get('/', async (c) => {
         ${storeInfo?.seo_keywords ? `<meta name="keywords" content="${storeInfo.seo_keywords}">` : ''}
         
         <!-- Favicon -->
-        <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
+        ${storeInfo?.favicon_url ? `<link rel="icon" href="${storeInfo.favicon_url}">` : '<link rel="icon" type="image/x-icon" href="/static/favicon.ico">'}
         
         <!-- Tailwind CSS -->
         <script src="https://cdn.tailwindcss.com"></script>

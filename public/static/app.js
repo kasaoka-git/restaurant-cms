@@ -169,19 +169,25 @@ async function loadMainImages() {
     
     const slidesContainer = document.getElementById('hero-slides');
     
+    // Detect mobile device
+    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) || window.innerWidth < 768;
+    
     images.forEach(item => {
       const slide = document.createElement('div');
       slide.className = 'swiper-slide';
       
+      // Use mobile_media_url if available and on mobile, otherwise use media_url
+      const mediaUrl = (isMobile && item.mobile_media_url) ? item.mobile_media_url : item.media_url;
+      
       if (item.media_type === 'video') {
         slide.innerHTML = `
           <video autoplay muted loop playsinline class="w-full h-full object-cover">
-            <source src="${item.media_url}" type="video/mp4">
+            <source src="${mediaUrl}" type="video/mp4">
           </video>
         `;
       } else {
         slide.innerHTML = `
-          <img src="${item.media_url}" alt="メインイメージ" class="w-full h-full object-cover">
+          <img src="${mediaUrl}" alt="メインイメージ" class="w-full h-full object-cover">
         `;
       }
       

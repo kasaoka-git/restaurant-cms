@@ -253,6 +253,18 @@ app.get('/store-info', requireAuth, async (c) => {
                     </p>
                 </div>
 
+                <!-- Favicon Upload -->
+                <div class="border-b pb-6">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">ファビコン</label>
+                    <input type="url" name="favicon_url" id="favicon-url" value="${storeInfo?.favicon_url || ''}"
+                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 mb-2"
+                           placeholder="https://example.com/favicon.png">
+                    <p class="text-xs text-gray-500 mb-2">
+                        <i class="fas fa-info-circle mr-1"></i>
+                        推奨サイズ: 32px × 32px または 64px × 64px（正方形）｜形式: PNG、ICO、またはSVG
+                    </p>
+                </div>
+
                 <div class="grid md:grid-cols-2 gap-6">
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">ショルダーネーム</label>
@@ -431,6 +443,8 @@ app.get('/store-info', requireAuth, async (c) => {
         <script>
           // Initialize logo uploader
           setTimeout(() => addSimpleUploader('logo-url', { acceptVideos: false }), 100);
+          // Initialize favicon uploader
+          setTimeout(() => addSimpleUploader('favicon-url', { acceptVideos: false }), 100);
 
           document.getElementById('store-info-form').addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -478,6 +492,7 @@ app.post('/api/store-info', requireAuth, async (c) => {
     await c.env.DB.prepare(`
       UPDATE store_info SET
         logo_url = ?,
+        favicon_url = ?,
         shoulder_name = ?,
         store_name = ?,
         phone = ?,
@@ -500,6 +515,7 @@ app.post('/api/store-info', requireAuth, async (c) => {
       WHERE id = ?
     `).bind(
       data.logo_url,
+      data.favicon_url,
       data.shoulder_name,
       data.store_name,
       data.phone,
@@ -524,13 +540,14 @@ app.post('/api/store-info', requireAuth, async (c) => {
     // Insert
     await c.env.DB.prepare(`
       INSERT INTO store_info (
-        logo_url, shoulder_name, store_name, phone, address, nearest_station,
+        logo_url, favicon_url, shoulder_name, store_name, phone, address, nearest_station,
         parking_info, payment_methods, other_info, google_maps_url,
         reservation_type, reservation_value, contact_form_url, show_contact_form,
         seo_title, seo_description, seo_keywords, ga4_id, clarity_id
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `).bind(
       data.logo_url,
+      data.favicon_url,
       data.shoulder_name,
       data.store_name,
       data.phone,

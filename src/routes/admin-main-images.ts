@@ -73,7 +73,7 @@ app.get('/', requireAuth, async (c) => {
 
                     <!-- Actions -->
                     <div class="flex space-x-2">
-                        <button onclick="editImage(${img.id}, '${img.media_type}', '${img.media_url.replace(/'/g, "\\'")}', ${img.display_order})" 
+                        <button onclick='editImage(${JSON.stringify(img).replace(/'/g, "\\'")})'
                                 class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 transition">
                             <i class="fas fa-edit"></i> 編集
                         </button>
@@ -122,7 +122,7 @@ app.get('/', requireAuth, async (c) => {
                     </div>
 
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">画像/動画 <span class="text-red-600">*</span></label>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">PC用画像/動画 <span class="text-red-600">*</span></label>
                         
                         <!-- Tab Selection -->
                         <div class="flex mb-4 border-b">
@@ -152,6 +152,43 @@ app.get('/', requireAuth, async (c) => {
                         </div>
 
                         <input type="hidden" name="media_url" id="media-url" required>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">スマホ用画像/動画（任意）</label>
+                        <p class="text-xs text-gray-500 mb-3">
+                            <i class="fas fa-info-circle mr-1"></i>
+                            スマホで表示する専用の画像/動画を設定できます。未設定の場合はPC用画像が表示されます。
+                        </p>
+                        
+                        <!-- Mobile Tab Selection -->
+                        <div class="flex mb-4 border-b">
+                            <button type="button" onclick="switchMobileTab('upload')" id="tab-mobile-upload" 
+                                    class="px-4 py-2 font-medium border-b-2 border-blue-600 text-blue-600">
+                                <i class="fas fa-upload mr-2"></i>アップロード
+                            </button>
+                            <button type="button" onclick="switchMobileTab('url')" id="tab-mobile-url" 
+                                    class="px-4 py-2 font-medium text-gray-500 hover:text-gray-700">
+                                <i class="fas fa-link mr-2"></i>URLで指定
+                            </button>
+                        </div>
+
+                        <!-- Mobile Upload Tab -->
+                        <div id="mobile-upload-tab" class="tab-content">
+                            <div id="mobile-media-upload-container"></div>
+                        </div>
+
+                        <!-- Mobile URL Tab -->
+                        <div id="mobile-url-tab" class="tab-content hidden">
+                            <input type="url" id="mobile-media-url-input" 
+                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                                   placeholder="https://example.com/mobile-image.jpg">
+                            <p class="text-xs text-gray-500 mt-1">
+                                スマホ用の画像または動画ファイルのURLを入力してください
+                            </p>
+                        </div>
+
+                        <input type="hidden" name="mobile_media_url" id="mobile-media-url">
                     </div>
 
                     <div class="flex space-x-4 pt-6">
@@ -231,6 +268,39 @@ app.get('/', requireAuth, async (c) => {
             document.getElementById('media-url').value = e.target.value;
           });
 
+          // Mobile tab switching
+          function switchMobileTab(tab) {
+            const uploadTab = document.getElementById('mobile-upload-tab');
+            const urlTab = document.getElementById('mobile-url-tab');
+            const uploadBtn = document.getElementById('tab-mobile-upload');
+            const urlBtn = document.getElementById('tab-mobile-url');
+            const mediaUrlInput = document.getElementById('mobile-media-url-input');
+
+            if (tab === 'upload') {
+              uploadTab.classList.remove('hidden');
+              urlTab.classList.add('hidden');
+              uploadBtn.classList.add('border-blue-600', 'text-blue-600');
+              uploadBtn.classList.remove('text-gray-500');
+              urlBtn.classList.remove('border-blue-600', 'text-blue-600');
+              urlBtn.classList.add('text-gray-500');
+              
+              // Clear URL input when switching to upload
+              mediaUrlInput.value = '';
+            } else {
+              uploadTab.classList.add('hidden');
+              urlTab.classList.remove('hidden');
+              urlBtn.classList.add('border-blue-600', 'text-blue-600');
+              urlBtn.classList.remove('text-gray-500');
+              uploadBtn.classList.remove('border-blue-600', 'text-blue-600');
+              uploadBtn.classList.add('text-gray-500');
+            }
+          }
+
+          // Sync mobile URL input with hidden field
+          document.getElementById('mobile-media-url-input').addEventListener('input', (e) => {
+            document.getElementById('mobile-media-url').value = e.target.value;
+          });
+
           function openAddModal() {
             isEditMode = false;
             document.getElementById('modal-title').textContent = 'メインイメージを追加';
@@ -271,15 +341,44 @@ app.get('/', requireAuth, async (c) => {
               buttonText: 'ファイルを選択',
               showPreview: true
             });
+
+            // Initialize mobile uploader
+            const mobileUploader = new MediaUploader({
+              acceptImages: true,
+              acceptVideos: true,
+              maxImageSize: 10 * 1024 * 1024, // 10MB
+              maxVideoSize: 100 * 1024 * 1024, // 100MB
+              onUploadStart: (file) => {
+                console.log('Mobile upload started:', file.name);
+              },
+              onUploadProgress: (percent) => {
+                console.log('Mobile upload progress:', percent + '%');
+              },
+              onUploadComplete: (result) => {
+                document.getElementById('mobile-media-url').value = result.url;
+                console.log('Mobile upload complete:', result);
+              },
+              onUploadError: (error) => {
+                alert('スマホ画像アップロードエラー: ' + error);
+              }
+            });
+
+            mobileUploader.createUploadButton('mobile-media-upload-container', {
+              name: 'mobile_media_url',
+              buttonText: 'スマホ用ファイルを選択',
+              showPreview: true
+            });
           }
 
-          function editImage(id, mediaType, mediaUrl, displayOrder) {
+          function editImage(image) {
             isEditMode = true;
             document.getElementById('modal-title').textContent = 'メインイメージを編集';
-            document.getElementById('image-id').value = id;
-            document.getElementById('media-type').value = mediaType;
-            document.getElementById('media-url').value = mediaUrl;
-            document.getElementById('media-url-input').value = mediaUrl;
+            document.getElementById('image-id').value = image.id;
+            document.getElementById('media-type').value = image.media_type;
+            document.getElementById('media-url').value = image.media_url;
+            document.getElementById('media-url-input').value = image.media_url;
+            document.getElementById('mobile-media-url').value = image.mobile_media_url || '';
+            document.getElementById('mobile-media-url-input').value = image.mobile_media_url || '';
             document.getElementById('modal').classList.remove('hidden');
             
             // Initialize uploader
@@ -287,6 +386,7 @@ app.get('/', requireAuth, async (c) => {
             
             // Switch to URL tab and show existing URL
             switchTab('url');
+            switchMobileTab('url');
           }
 
           function closeModal() {
@@ -367,9 +467,9 @@ app.post('/api', requireAuth, async (c) => {
   const nextOrder = (maxOrder?.max_order || 0) + 1;
   
   await c.env.DB.prepare(`
-    INSERT INTO main_images (media_type, media_url, display_order)
-    VALUES (?, ?, ?)
-  `).bind(data.media_type, data.media_url, nextOrder).run();
+    INSERT INTO main_images (media_type, media_url, mobile_media_url, display_order)
+    VALUES (?, ?, ?, ?)
+  `).bind(data.media_type, data.media_url, data.mobile_media_url || null, nextOrder).run();
   
   return c.json({ success: true });
 })
@@ -382,9 +482,10 @@ app.put('/api/:id', requireAuth, async (c) => {
   await c.env.DB.prepare(`
     UPDATE main_images SET
       media_type = ?,
-      media_url = ?
+      media_url = ?,
+      mobile_media_url = ?
     WHERE id = ?
-  `).bind(data.media_type, data.media_url, id).run();
+  `).bind(data.media_type, data.media_url, data.mobile_media_url || null, id).run();
   
   return c.json({ success: true });
 })
