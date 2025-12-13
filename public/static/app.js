@@ -26,7 +26,13 @@ async function loadStoreInfo() {
       ? `${store.shoulder_name} ${store.store_name}` 
       : store.store_name;
     
-    document.getElementById('nav-store-name').textContent = storeName;
+    // Display logo or store name in navigation
+    const navStoreName = document.getElementById('nav-store-name');
+    if (store.logo_url) {
+      navStoreName.innerHTML = `<img src="${store.logo_url}" alt="${store.store_name}" class="h-12 md:h-14 object-contain">`;
+    } else {
+      navStoreName.textContent = storeName;
+    }
     document.getElementById('footer-store-name').textContent = storeName;
     document.getElementById('footer-copyright-name').textContent = store.store_name;
     document.getElementById('footer-year').textContent = new Date().getFullYear();
@@ -53,13 +59,21 @@ async function loadStoreInfo() {
         btn.classList.remove('hidden');
         
         if (store.reservation_type === 'url') {
-          btn.textContent = 'ご予約';
+          btn.innerHTML = '<i class="fas fa-globe mr-2"></i>ご予約はこちら';
           btn.onclick = () => window.open(store.reservation_value, '_blank');
         } else if (store.reservation_type === 'phone') {
-          btn.innerHTML = '<i class="fas fa-phone mr-2"></i>電話でのご予約';
+          btn.innerHTML = '<i class="fas fa-phone mr-2"></i>ご予約はこちら';
           btn.onclick = () => window.location.href = `tel:${store.reservation_value}`;
         }
       });
+    } else {
+      // 予約ボタンを非表示にする
+      const buttons = [
+        document.getElementById('reservation-btn-nav'),
+        document.getElementById('reservation-btn-mobile'),
+        document.getElementById('reservation-btn-footer')
+      ];
+      buttons.forEach(btn => btn.classList.add('hidden'));
     }
     
     // Store info section
@@ -109,24 +123,36 @@ async function loadStoreInfo() {
       `;
     }
     
-    // Contact form - URLが設定されている場合のみ表示
+    // Contact form - URLが設定されていて、かつ表示フラグがONの場合のみ表示
     if (store.show_contact_form && store.contact_form_url) {
       document.getElementById('contact').classList.remove('hidden');
       document.getElementById('contact-content').innerHTML = `
         <iframe 
           src="${store.contact_form_url}" 
           width="100%" 
-          height="2400" 
+          height="2000" 
           frameborder="0" 
           marginheight="0" 
           marginwidth="0"
           class="rounded-lg shadow"
+          scrolling="no"
           style="border: none; overflow: hidden;">
           読み込んでいます…
         </iframe>
+        <script>
+          // iframeの高さを自動調整
+          window.addEventListener('message', function(e) {
+            if (e.origin === 'https://docs.google.com') {
+              var iframe = document.querySelector('#contact-content iframe');
+              if (iframe && e.data && e.data.height) {
+                iframe.style.height = e.data.height + 'px';
+              }
+            }
+          });
+        </script>
       `;
     } else {
-      // URLが未設定の場合は非表示
+      // URLが未設定または表示フラグがOFFの場合は非表示
       document.getElementById('contact').classList.add('hidden');
     }
     

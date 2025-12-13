@@ -237,10 +237,22 @@ app.get('/store-info', requireAuth, async (c) => {
   ).bind('banquet_title').first();
   const banquetTitle = banquetTitleSetting?.setting_value || '宴会コース';
 
-  const content = `
+  return c.html(getAdminLayout(`
         <div class="max-w-4xl">
             <form id="store-info-form" class="bg-white p-8 rounded-lg shadow space-y-6">
                 
+                <!-- Logo Upload -->
+                <div class="border-b pb-6">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">ヘッダーロゴ</label>
+                    <input type="url" name="logo_url" id="logo-url" value="${storeInfo?.logo_url || ''}"
+                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 mb-2"
+                           placeholder="https://example.com/logo.png">
+                    <p class="text-xs text-gray-500 mb-2">
+                        <i class="fas fa-info-circle mr-1"></i>
+                        推奨サイズ: 幅200px × 高さ60px（最大300px × 100px）｜形式: PNG（背景透過）推奨、またはJPEG
+                    </p>
+                </div>
+
                 <div class="grid md:grid-cols-2 gap-6">
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">ショルダーネーム</label>
@@ -417,6 +429,9 @@ app.get('/store-info', requireAuth, async (c) => {
         </div>
 
         <script>
+          // Initialize logo uploader
+          setTimeout(() => addSimpleUploader('logo-url', { acceptVideos: false }), 100);
+
           document.getElementById('store-info-form').addEventListener('submit', async (e) => {
             e.preventDefault();
             const formData = new FormData(e.target);
@@ -448,9 +463,7 @@ app.get('/store-info', requireAuth, async (c) => {
             }
           });
         </script>
-  `;
-
-  return c.html(getAdminLayout(content, 'store-info', '店舗情報編集'));
+  `, 'store-info', '店舗情報編集'));
 })
 
 // Save store info API
@@ -464,6 +477,7 @@ app.post('/api/store-info', requireAuth, async (c) => {
     // Update
     await c.env.DB.prepare(`
       UPDATE store_info SET
+        logo_url = ?,
         shoulder_name = ?,
         store_name = ?,
         phone = ?,
@@ -485,6 +499,7 @@ app.post('/api/store-info', requireAuth, async (c) => {
         updated_at = CURRENT_TIMESTAMP
       WHERE id = ?
     `).bind(
+      data.logo_url,
       data.shoulder_name,
       data.store_name,
       data.phone,
@@ -509,12 +524,13 @@ app.post('/api/store-info', requireAuth, async (c) => {
     // Insert
     await c.env.DB.prepare(`
       INSERT INTO store_info (
-        shoulder_name, store_name, phone, address, nearest_station,
+        logo_url, shoulder_name, store_name, phone, address, nearest_station,
         parking_info, payment_methods, other_info, google_maps_url,
         reservation_type, reservation_value, contact_form_url, show_contact_form,
         seo_title, seo_description, seo_keywords, ga4_id, clarity_id
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `).bind(
+      data.logo_url,
       data.shoulder_name,
       data.store_name,
       data.phone,

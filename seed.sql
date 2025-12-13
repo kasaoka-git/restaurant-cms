@@ -102,4 +102,5 @@ INSERT OR IGNORE INTO faq (question, answer, display_order) VALUES
 INSERT OR IGNORE INTO site_settings (setting_key, setting_value) VALUES 
   ('news_display_count', '5'),
   ('show_banquet_section', '1'),
+  ('banquet_section_title', '宴会コース'),
   ('theme', 'default');
