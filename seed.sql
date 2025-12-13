@@ -101,4 +101,5 @@ INSERT OR IGNORE INTO faq (question, answer, display_order) VALUES
 -- サイト設定のデフォルト値
 INSERT OR IGNORE INTO site_settings (setting_key, setting_value) VALUES 
   ('news_display_count', '5'),
-  ('show_banquet_section', '1');
+  ('show_banquet_section', '1'),
+  ('theme', 'default');

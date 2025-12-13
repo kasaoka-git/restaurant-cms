@@ -1,0 +1,126 @@
+/* Theme: Modern (モダン・洗練) - 将来の別テーマサンプル */
+
+:root {
+  /* === 基本カラー === */
+  --color-primary: #2C3E50;           /* ネイビー */
+  --color-secondary: #E74C3C;         /* レッド */
+  --color-accent: #3498DB;            /* ブルー */
+  --color-dark: #1A252F;              /* ダークネイビー */
+  
+  /* === 背景色 === */
+  --bg-primary: #FFFFFF;
+  --bg-secondary: #F8F9FA;
+  --bg-dark: #1A252F;
+  
+  /* === テキストカラー === */
+  --text-primary: #2C3E50;
+  --text-secondary: #5A6C7D;
+  --text-light: #95A5A6;
+  --text-on-dark: #ECF0F1;
+  
+  /* === フォント === */
+  --font-main: 'Inter', 'Roboto', sans-serif;
+  --font-heading: 'Montserrat', sans-serif;
+  --font-size-base: 16px;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-bold: 700;
+  
+  /* === スペーシング === */
+  --spacing-xs: 0.5rem;
+  --spacing-sm: 0.75rem;
+  --spacing-md: 1rem;
+  --spacing-lg: 2rem;
+  --spacing-xl: 3rem;
+  --spacing-2xl: 4rem;
+  
+  /* === ボーダー・角丸 === */
+  --border-radius-sm: 0px;            /* 角ばったデザイン */
+  --border-radius-md: 0px;
+  --border-radius-lg: 0px;
+  --border-radius-full: 0px;
+  --border-width: 2px;
+  --border-color: #BDC3C7;
+  
+  /* === シャドウ === */
+  --shadow-sm: 0 2px 4px 0 rgb(0 0 0 / 0.1);
+  --shadow-md: 0 4px 8px -2px rgb(0 0 0 / 0.15);
+  --shadow-lg: 0 8px 16px -4px rgb(0 0 0 / 0.2);
+  --shadow-xl: 0 16px 32px -8px rgb(0 0 0 / 0.25);
+  
+  /* === トランジション === */
+  --transition-fast: 100ms;
+  --transition-normal: 200ms;
+  --transition-slow: 400ms;
+}
+
+/* モダンテーマ専用のフォント読み込み */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;700&family=Montserrat:wght@600;700&display=swap');
+
+/* === フォント適用 === */
+body {
+  font-family: var(--font-main);
+  color: var(--text-primary);
+  background-color: var(--bg-secondary);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-heading);
+  color: var(--text-primary);
+  letter-spacing: -0.5px;
+}
+
+/* === カラー適用 === */
+.text-primary {
+  color: var(--color-primary) !important;
+}
+
+.bg-primary {
+  background-color: var(--color-primary) !important;
+}
+
+.border-primary {
+  border-color: var(--color-primary) !important;
+}
+
+/* === ボタンスタイル === */
+.bg-primary:hover {
+  background-color: var(--color-secondary) !important;
+}
+
+/* === Swiperボタンカスタマイズ === */
+.swiper-button-prev,
+.swiper-button-next {
+  color: white !important;
+  background: rgba(44, 62, 80, 0.8);
+  border-radius: 0px;
+}
+
+.swiper-button-prev:hover,
+.swiper-button-next:hover {
+  background: rgba(231, 76, 60, 0.9);
+}
+
+/* === Swiper Paginationカスタマイズ === */
+.swiper-pagination-bullet {
+  background: var(--color-primary) !important;
+  opacity: 0.3 !important;
+  border-radius: 0px;
+  width: 30px;
+  height: 4px;
+}
+
+.swiper-pagination-bullet-active {
+  opacity: 1 !important;
+  background: var(--color-secondary) !important;
+}
+
+/* === サイドバーリンク === */
+.sidebar-link:hover {
+  background-color: rgba(44, 62, 80, 0.05);
+}
+
+.sidebar-link.active {
+  background-color: rgba(44, 62, 80, 0.1);
+  border-left-color: var(--color-primary);
+}

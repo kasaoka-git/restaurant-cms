@@ -9,6 +9,13 @@ app.get('/', async (c) => {
     'SELECT * FROM store_info LIMIT 1'
   ).first<StoreInfo>();
 
+  // Fetch theme setting
+  const themeSetting = await c.env.DB.prepare(
+    'SELECT setting_value FROM site_settings WHERE setting_key = ?'
+  ).bind('theme').first();
+  
+  const theme = themeSetting?.setting_value || 'default';
+
   const seoTitle = storeInfo?.seo_title || storeInfo?.store_name || '和食レストラン';
   const seoDescription = storeInfo?.seo_description || '';
   const ga4Id = storeInfo?.ga4_id || '';
@@ -36,7 +43,13 @@ app.get('/', async (c) => {
         <!-- Font Awesome -->
         <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet">
         
-        <!-- Custom CSS -->
+        <!-- Base CSS (構造) -->
+        <link href="/static/base.css" rel="stylesheet">
+        
+        <!-- Theme CSS (デザイン) -->
+        <link href="/static/theme-${theme}.css" rel="stylesheet">
+        
+        <!-- Custom CSS (追加カスタマイズ用) -->
         <link href="/static/style.css" rel="stylesheet">
         
         <!-- Google Analytics 4 -->

@@ -9,6 +9,12 @@ export function getAdminLayout(content: string, currentPage: string = '', pageTi
         <script src="https://cdn.tailwindcss.com"></script>
         <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet">
         <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+        
+        <!-- Base CSS -->
+        <link href="/static/base.css" rel="stylesheet">
+        
+        <!-- Theme CSS (管理画面は常にdefault) -->
+        <link href="/static/theme-default.css" rel="stylesheet">
         <style>
           .sidebar-link {
             transition: all 0.3s ease;

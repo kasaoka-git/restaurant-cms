@@ -1,0 +1,138 @@
+/* Base Layout CSS - 構造のみ（テーマに依存しない） */
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Section spacing */
+section {
+  scroll-margin-top: 80px;
+}
+
+/* Hero section structure */
+.hero-swiper .swiper-slide {
+  position: relative;
+}
+
+.hero-swiper .swiper-slide::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(to bottom, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.1) 50%, rgba(0,0,0,0.3) 100%);
+}
+
+/* Swiper button structure */
+.swiper-button-prev,
+.swiper-button-next {
+  padding: 20px;
+  border-radius: 50%;
+  width: 44px !important;
+  height: 44px !important;
+}
+
+.swiper-button-prev::after,
+.swiper-button-next::after {
+  font-size: 20px !important;
+}
+
+/* Card hover effects structure */
+.hover\:shadow-xl {
+  transition: box-shadow 0.3s ease;
+}
+
+/* Image modal structure */
+#image-modal {
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Menu swiper structure */
+.menu-swiper {
+  padding: 20px 50px;
+}
+
+.menu-swiper .swiper-slide img {
+  max-height: 600px;
+  width: 100%;
+  object-fit: contain;
+}
+
+/* Gallery swiper structure */
+.gallery-swiper {
+  padding: 20px 50px;
+}
+
+.gallery-swiper .swiper-slide {
+  height: auto;
+}
+
+.aspect-square {
+  aspect-ratio: 1 / 1;
+}
+
+/* FAQ toggle icon structure */
+#faq-list button i {
+  transition: transform 0.3s ease;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .swiper-button-prev,
+  .swiper-button-next {
+    display: none !important;
+  }
+  
+  .menu-swiper,
+  .gallery-swiper {
+    padding: 20px 10px;
+  }
+}
+
+/* Loading animation structure */
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+.loading {
+  animation: shimmer 2s infinite;
+  background: linear-gradient(to right, #f0f0f0 4%, #e8e8e8 25%, #f0f0f0 36%);
+  background-size: 1000px 100%;
+}
+
+/* Sidebar link structure */
+.sidebar-link {
+  transition: all 0.3s ease;
+}
+
+.sidebar-link:hover {
+  padding-left: 1.5rem;
+}
+
+.sidebar-link.active {
+  border-left: 4px solid;
+  font-weight: 600;
+}
+
+/* General transitions */
+* {
+  transition-property: color, background-color, border-color, transform, box-shadow;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}

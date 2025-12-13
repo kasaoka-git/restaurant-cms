@@ -179,14 +179,66 @@ npm run deploy:prod
 2. 独自ドメイン対応
 3. プラン・課金システム
 
-## 🎨 デザインのカスタマイズ
+## 🎨 テーマシステム（スキン変更）
 
-CSSファイル (`/public/static/style.css`) を編集することで、デザインをカスタマイズできます：
+### CSS構造
+プロジェクトは3層のCSS構造になっています：
+
+1. **base.css** - 基本構造・レイアウト（変更不要）
+2. **theme-*.css** - デザイン要素（CSS変数で定義）
+3. **style.css** - 追加カスタマイズ用
+
+### テーマ作成方法
+
+新しいテーマを作成する場合：
+
+1. `public/static/theme-custom.css` を作成
+2. CSS変数を定義（色、フォント、角丸など）
+3. データベースの `site_settings` で `theme = 'custom'` に設定
+
+### CSS変数一覧
+
+```css
+:root {
+  /* カラー */
+  --color-primary: #8B4513;
+  --color-secondary: #D2691E;
+  --color-accent: #F4A460;
+  
+  /* フォント */
+  --font-main: 'Noto Sans JP', sans-serif;
+  --font-heading: 'Noto Serif JP', serif;
+  
+  /* スペーシング */
+  --spacing-md: 1rem;
+  --spacing-lg: 1.5rem;
+  
+  /* ボーダー */
+  --border-radius-md: 0.5rem;
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+}
+```
+
+### AIエージェントでテーマ生成
+
+1. デザイン画像をアップロード
+2. カスタムエージェントがCSS変数を生成
+3. `theme-custom.css` として保存
+4. データベースで切り替え
+
+### 既存テーマ
+
+- **theme-default.css** - 高級和食（茶色系）
+- **theme-modern.css** - モダン・洗練（ネイビー系）
+
+### デザインのカスタマイズ
+
+基本構造を変えずに、CSS変数のみでカスタマイズできます：
 
 - カラーテーマ変更
 - フォント変更
-- レイアウト調整
-- アニメーション効果
+- 角丸・シャドウ調整
+- スペーシング調整
 
 ## 📱 動作確認済み環境
 
