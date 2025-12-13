@@ -230,35 +230,15 @@ app.get('/store-info', requireAuth, async (c) => {
   const storeInfo = await c.env.DB.prepare(
     'SELECT * FROM store_info LIMIT 1'
   ).first();
+  
+  // Get banquet title from site_settings
+  const banquetTitleSetting = await c.env.DB.prepare(
+    'SELECT setting_value FROM site_settings WHERE setting_key = ?'
+  ).bind('banquet_title').first();
+  const banquetTitle = banquetTitleSetting?.setting_value || '宴会コース';
 
-  return c.html(`
-    <!DOCTYPE html>
-    <html lang="ja">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>店舗情報編集</title>
-        <script src="https://cdn.tailwindcss.com"></script>
-        <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet">
-    </head>
-    <body class="bg-gray-100">
-        <!-- Header -->
-        <nav class="bg-white shadow-md">
-            <div class="container mx-auto px-4 py-4 flex justify-between items-center">
-                <div class="flex items-center space-x-4">
-                    <a href="/admin/dashboard" class="text-gray-600 hover:text-gray-800">
-                        <i class="fas fa-arrow-left"></i> ダッシュボードに戻る
-                    </a>
-                    <h1 class="text-2xl font-bold text-gray-800">店舗情報編集</h1>
-                </div>
-                <a href="/admin/logout" class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition">
-                    ログアウト
-                </a>
-            </div>
-        </nav>
-
-        <!-- Main Content -->
-        <div class="container mx-auto px-4 py-8 max-w-4xl">
+  const content = `
+        <div class="max-w-4xl">
             <form id="store-info-form" class="bg-white p-8 rounded-lg shadow space-y-6">
                 
                 <div class="grid md:grid-cols-2 gap-6">
@@ -365,6 +345,20 @@ app.get('/store-info', requireAuth, async (c) => {
                     </div>
                 </div>
 
+                <!-- Banquet Section Settings -->
+                <div class="border-t pt-6">
+                    <h3 class="text-lg font-bold mb-4">宴会コース設定</h3>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">セクションタイトル</label>
+                        <select name="banquet_title" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
+                            <option value="宴会コース" ${banquetTitle === '宴会コース' ? 'selected' : ''}>宴会コース</option>
+                            <option value="コース料理" ${banquetTitle === 'コース料理' ? 'selected' : ''}>コース料理</option>
+                            <option value="パーティメニュー" ${banquetTitle === 'パーティメニュー' ? 'selected' : ''}>パーティメニュー</option>
+                        </select>
+                        <p class="text-xs text-gray-500 mt-1">フロントエンドに表示されるセクションのタイトルを選択してください</p>
+                    </div>
+                </div>
+
                 <!-- SEO Settings -->
                 <div class="border-t pt-6">
                     <h3 class="text-lg font-bold mb-4">SEO設定</h3>
@@ -422,7 +416,6 @@ app.get('/store-info', requireAuth, async (c) => {
             </form>
         </div>
 
-        <script src="https://cdn.jsdelivr.net/npm/axios@1.6.0/dist/axios.min.js"></script>
         <script>
           document.getElementById('store-info-form').addEventListener('submit', async (e) => {
             e.preventDefault();
@@ -433,7 +426,17 @@ app.get('/store-info', requireAuth, async (c) => {
             data.show_contact_form = formData.get('show_contact_form') ? 1 : 0;
             
             try {
+              // Save store info
               await axios.post('/admin/api/store-info', data);
+              
+              // Save banquet title to site_settings
+              if (data.banquet_title) {
+                await axios.post('/admin/api/settings', {
+                  key: 'banquet_title',
+                  value: data.banquet_title
+                });
+              }
+              
               const successDiv = document.getElementById('success-message');
               successDiv.textContent = '保存しました！';
               successDiv.classList.remove('hidden');
@@ -445,9 +448,9 @@ app.get('/store-info', requireAuth, async (c) => {
             }
           });
         </script>
-    </body>
-    </html>
-  `);
+  `;
+
+  return c.html(getAdminLayout(content, 'store-info', '店舗情報編集'));
 })
 
 // Save store info API
@@ -531,6 +534,32 @@ app.post('/api/store-info', requireAuth, async (c) => {
       data.ga4_id,
       data.clarity_id
     ).run();
+  }
+  
+  return c.json({ success: true });
+})
+
+// Save site settings API
+app.post('/api/settings', requireAuth, async (c) => {
+  const { key, value } = await c.req.json();
+  
+  // Check if setting exists
+  const existing = await c.env.DB.prepare(
+    'SELECT id FROM site_settings WHERE setting_key = ?'
+  ).bind(key).first();
+  
+  if (existing) {
+    // Update
+    await c.env.DB.prepare(`
+      UPDATE site_settings SET setting_value = ?, updated_at = CURRENT_TIMESTAMP
+      WHERE setting_key = ?
+    `).bind(value, key).run();
+  } else {
+    // Insert
+    await c.env.DB.prepare(`
+      INSERT INTO site_settings (setting_key, setting_value)
+      VALUES (?, ?)
+    `).bind(key, value).run();
   }
   
   return c.json({ success: true });

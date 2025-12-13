@@ -109,23 +109,25 @@ async function loadStoreInfo() {
       `;
     }
     
-    // Contact form
+    // Contact form - URLが設定されている場合のみ表示
     if (store.show_contact_form && store.contact_form_url) {
       document.getElementById('contact').classList.remove('hidden');
       document.getElementById('contact-content').innerHTML = `
         <iframe 
           src="${store.contact_form_url}" 
           width="100%" 
-          height="2000" 
+          height="2400" 
           frameborder="0" 
           marginheight="0" 
           marginwidth="0"
-          scrolling="no"
           class="rounded-lg shadow"
-          style="overflow: hidden; min-height: 1500px;">
+          style="border: none; overflow: hidden;">
           読み込んでいます…
         </iframe>
       `;
+    } else {
+      // URLが未設定の場合は非表示
+      document.getElementById('contact').classList.add('hidden');
     }
     
   } catch (error) {
@@ -293,6 +295,16 @@ async function loadBanquetCourses() {
     if (courses.length === 0) return;
     
     document.getElementById('banquet').classList.remove('hidden');
+    
+    // Load banquet title from settings
+    try {
+      const settingsResponse = await axios.get('/api/settings/banquet_title');
+      const title = settingsResponse.data.setting_value || '宴会コース';
+      document.getElementById('banquet-title').textContent = title;
+    } catch (error) {
+      // Use default title if setting not found
+      document.getElementById('banquet-title').textContent = '宴会コース';
+    }
     
     const container = document.getElementById('banquet-grid');
     

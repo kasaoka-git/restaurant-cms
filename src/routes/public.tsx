@@ -183,7 +183,7 @@ app.get('/', async (c) => {
         <!-- Banquet Section -->
         <section id="banquet" class="py-20 bg-gray-100 hidden">
             <div class="container mx-auto px-4">
-                <h2 class="text-4xl font-bold text-center text-primary mb-12">宴会コース</h2>
+                <h2 id="banquet-title" class="text-4xl font-bold text-center text-primary mb-12">宴会コース</h2>
                 <div id="banquet-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                     <!-- Loaded by JS -->
                 </div>
