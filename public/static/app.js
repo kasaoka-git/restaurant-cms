@@ -56,7 +56,7 @@ async function loadStoreInfo() {
           btn.textContent = 'ご予約';
           btn.onclick = () => window.open(store.reservation_value, '_blank');
         } else if (store.reservation_type === 'phone') {
-          btn.textContent = store.reservation_value;
+          btn.innerHTML = '<i class="fas fa-phone mr-2"></i>電話でのご予約';
           btn.onclick = () => window.location.href = `tel:${store.reservation_value}`;
         }
       });
@@ -76,8 +76,25 @@ async function loadStoreInfo() {
       </div>
     `;
     
-    // Google Maps
-    if (store.google_maps_url) {
+    // Google Maps - 住所から自動生成
+    if (store.address) {
+      const encodedAddress = encodeURIComponent(store.address);
+      const mapUrl = `https://www.google.com/maps/embed/v1/place?key=AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8&q=${encodedAddress}`;
+      
+      document.getElementById('map-content').innerHTML = `
+        <iframe 
+          src="${mapUrl}" 
+          width="100%" 
+          height="400" 
+          style="border:0;" 
+          allowfullscreen="" 
+          loading="lazy" 
+          referrerpolicy="no-referrer-when-downgrade"
+          class="rounded-lg shadow">
+        </iframe>
+      `;
+    } else if (store.google_maps_url) {
+      // フォールバック：URLが指定されている場合
       document.getElementById('map-content').innerHTML = `
         <iframe 
           src="${store.google_maps_url}" 
@@ -235,7 +252,7 @@ async function loadMenuImages() {
       slidesContainer.appendChild(slide);
     });
     
-    // Initialize Swiper
+    // Initialize Swiper - レスポンシブ対応：PC3枚、タブレット2枚、スマホ1枚
     new Swiper('.menu-swiper', {
       loop: images.length > 1,
       slidesPerView: 1,
@@ -247,6 +264,16 @@ async function loadMenuImages() {
       pagination: {
         el: '.swiper-pagination',
         clickable: true,
+      },
+      breakpoints: {
+        640: {
+          slidesPerView: 2,
+          spaceBetween: 20,
+        },
+        1024: {
+          slidesPerView: 3,
+          spaceBetween: 30,
+        },
       },
     });
     
@@ -319,22 +346,51 @@ async function loadGallery() {
     const response = await axios.get('/api/gallery');
     const gallery = response.data;
     
-    const container = document.getElementById('gallery-grid');
+    if (gallery.length === 0) return;
+    
+    const slidesContainer = document.getElementById('gallery-slides');
     
     gallery.forEach(item => {
-      const card = document.createElement('div');
-      card.className = 'relative overflow-hidden rounded-lg shadow-lg hover:shadow-xl transition cursor-pointer group';
-      card.innerHTML = `
-        <img src="${item.image_url}" alt="${item.title || ''}" class="w-full h-48 object-cover group-hover:scale-110 transition duration-300">
-        ${item.title || item.description ? `
-          <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4">
-            ${item.title ? `<h4 class="text-white font-bold">${item.title}</h4>` : ''}
-            ${item.description ? `<p class="text-white text-sm">${item.description}</p>` : ''}
-          </div>
-        ` : ''}
+      const slide = document.createElement('div');
+      slide.className = 'swiper-slide cursor-pointer';
+      slide.innerHTML = `
+        <div class="relative aspect-square overflow-hidden rounded-lg shadow-lg group">
+          <img src="${item.image_url}" alt="${item.title || ''}" class="w-full h-full object-cover group-hover:scale-110 transition duration-300">
+          ${item.title || item.description ? `
+            <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4">
+              ${item.title ? `<h4 class="text-white font-bold">${item.title}</h4>` : ''}
+              ${item.description ? `<p class="text-white text-sm">${item.description}</p>` : ''}
+            </div>
+          ` : ''}
+        </div>
       `;
-      card.onclick = () => openModal(item.image_url);
-      container.appendChild(card);
+      slide.onclick = () => openModal(item.image_url);
+      slidesContainer.appendChild(slide);
+    });
+    
+    // Initialize Gallery Swiper - レスポンシブ対応：PC4枚、タブレット3枚、スマホ2枚
+    new Swiper('.gallery-swiper', {
+      loop: gallery.length > 1,
+      slidesPerView: 2,
+      spaceBetween: 15,
+      navigation: {
+        nextEl: '.gallery-next',
+        prevEl: '.gallery-prev',
+      },
+      pagination: {
+        el: '.gallery-pagination',
+        clickable: true,
+      },
+      breakpoints: {
+        640: {
+          slidesPerView: 3,
+          spaceBetween: 20,
+        },
+        1024: {
+          slidesPerView: 4,
+          spaceBetween: 20,
+        },
+      },
     });
     
   } catch (error) {

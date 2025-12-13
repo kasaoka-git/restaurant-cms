@@ -191,8 +191,15 @@ app.get('/', async (c) => {
         <section id="gallery" class="py-20 bg-gray-100">
             <div class="container mx-auto px-4">
                 <h2 class="text-4xl font-bold text-center text-primary mb-12">ギャラリー</h2>
-                <div id="gallery-grid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                    <!-- Loaded by JS -->
+                <div class="max-w-6xl mx-auto">
+                    <div class="swiper gallery-swiper">
+                        <div class="swiper-wrapper" id="gallery-slides">
+                            <!-- Loaded by JS -->
+                        </div>
+                        <div class="swiper-pagination gallery-pagination"></div>
+                        <div class="swiper-button-prev gallery-prev"></div>
+                        <div class="swiper-button-next gallery-next"></div>
+                    </div>
                 </div>
             </div>
         </section>

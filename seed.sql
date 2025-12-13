@@ -16,6 +16,8 @@ INSERT OR IGNORE INTO store_info (
   google_maps_url,
   reservation_type,
   reservation_value,
+  contact_form_url,
+  show_contact_form,
   seo_title,
   seo_description
 ) VALUES (
@@ -30,18 +32,23 @@ INSERT OR IGNORE INTO store_info (
   'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3281.2!2d135.5!3d34.6!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1',
   'phone',
   '06-1234-5678',
+  'https://docs.google.com/forms/d/e/1FAIpQLSeXVaQpEbYt9xKWgJuqPQ0RPNoS6nugSFT6tePmjsAuu65lbw/viewform?usp=header',
+  1,
   '懐石料理 雅 -MIYABI- | 大阪・難波の本格和食',
   '大阪・難波で本格懐石料理をご提供。旬の食材を使った季節の味わいをお楽しみください。'
 );
 
 -- サンプルご挨拶
-INSERT OR IGNORE INTO greeting (title, message) VALUES (
-  '料理長からのご挨拶',
+INSERT OR IGNORE INTO greeting (title, message, image_url) VALUES (
+  'ご挨拶',
   '当店では、四季折々の旬の食材を厳選し、伝統的な日本料理の技法を大切にしながら、心を込めてお料理をご提供しております。
 
 お客様に至福のひとときをお過ごしいただけますよう、スタッフ一同、真心を込めておもてなしさせていただきます。
 
-どうぞごゆっくりとお楽しみくださいませ。'
+どうぞごゆっくりとお楽しみくださいませ。
+
+店主 山田 太郎',
+  'https://images.unsplash.com/photo-1583394293214-28ded15ee548?w=400'
 );
 
 -- サンプルメインイメージ（ダミー画像URL）

@@ -93,8 +93,21 @@ section {
 
 .menu-swiper .swiper-slide img {
   max-height: 600px;
-  width: auto;
-  margin: 0 auto;
+  width: 100%;
+  object-fit: contain;
+}
+
+/* Gallery swiper specific styles */
+.gallery-swiper {
+  padding: 20px 50px;
+}
+
+.gallery-swiper .swiper-slide {
+  height: auto;
+}
+
+.aspect-square {
+  aspect-ratio: 1 / 1;
 }
 
 /* FAQ toggle icon animation */
