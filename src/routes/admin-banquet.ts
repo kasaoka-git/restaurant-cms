@@ -251,7 +251,7 @@ app.post('/', requireAuth, async (c) => {
   const nextOrder = (maxOrder?.max_order || 0) + 1;
   
   await c.env.DB.prepare(`
-    INSERT INTO banquet_courses (name, description, image_url, is_visible, display_order)
+    INSERT INTO banquet_courses (course_name, course_description, image_url, is_visible, display_order)
     VALUES (?, ?, ?, ?, ?)
   `).bind(data.name, data.description || null, data.image_url || null, data.is_visible || 1, nextOrder).run();
   
@@ -265,7 +265,7 @@ app.put('/:id', requireAuth, async (c) => {
   
   await c.env.DB.prepare(`
     UPDATE banquet_courses 
-    SET name = ?, description = ?, image_url = ?, is_visible = ?
+    SET course_name = ?, course_description = ?, image_url = ?, is_visible = ?
     WHERE id = ?
   `).bind(data.name, data.description || null, data.image_url || null, data.is_visible || 1, id).run();
   
