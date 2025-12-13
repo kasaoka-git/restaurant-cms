@@ -1,7 +1,7 @@
 -- デフォルト管理者アカウント（パスワード: admin123）
--- bcryptハッシュは実装後に生成
+-- SHA-256ハッシュ
 INSERT OR IGNORE INTO admin_users (username, password_hash) VALUES 
-  ('admin', '$2a$10$eDZvHOVhLCYoJlEbRvnPh.wXp1e7L.XPXKNMqOZjYrY6pL.JNQvPO');
+  ('admin', '240be518fabd2724ddb6f04eeb1da5967448d7e831c08c8fa822809f74c720a9');
 
 -- デフォルト店舗情報
 INSERT OR IGNORE INTO store_info (
