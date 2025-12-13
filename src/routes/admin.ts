@@ -598,4 +598,14 @@ app.post('/api/settings', requireAuth, async (c) => {
   return c.json({ success: true });
 })
 
+// Mount API routes for sub-modules (to match frontend API calls)
+app.route('/api/main-images', adminMainImages)
+app.route('/api/commitment', adminCommitment)
+app.route('/api/greeting', adminGreeting)
+app.route('/api/menu', adminMenu)
+app.route('/api/banquet', adminBanquet)
+app.route('/api/news', adminNews)
+app.route('/api/gallery', adminGallery)
+app.route('/api/faq', adminFaq)
+
 export default app
