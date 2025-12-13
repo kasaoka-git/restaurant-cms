@@ -61,7 +61,7 @@ app.get('/banquet-courses', async (c) => {
 app.get('/news', async (c) => {
   const limit = c.req.query('limit') || '5';
   const { results } = await c.env.DB.prepare(
-    `SELECT * FROM news WHERE is_visible = 1 ORDER BY published_date DESC LIMIT ?`
+    `SELECT * FROM news WHERE is_visible = 1 ORDER BY published_at DESC LIMIT ?`
   ).bind(parseInt(limit)).all();
   
   return c.json(results);
@@ -70,7 +70,7 @@ app.get('/news', async (c) => {
 // Get gallery
 app.get('/gallery', async (c) => {
   const { results } = await c.env.DB.prepare(
-    'SELECT * FROM gallery WHERE is_visible = 1 ORDER BY display_order ASC'
+    'SELECT * FROM gallery ORDER BY display_order ASC'
   ).all();
   
   return c.json(results);
@@ -79,7 +79,7 @@ app.get('/gallery', async (c) => {
 // Get FAQ
 app.get('/faq', async (c) => {
   const { results } = await c.env.DB.prepare(
-    'SELECT * FROM faq WHERE is_visible = 1 ORDER BY display_order ASC'
+    'SELECT * FROM faq ORDER BY display_order ASC'
   ).all();
   
   return c.json(results);

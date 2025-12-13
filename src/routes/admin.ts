@@ -6,6 +6,10 @@ import adminMainImages from './admin-main-images'
 import adminCommitment from './admin-commitment'
 import adminGreeting from './admin-greeting'
 import adminMenu from './admin-menu'
+import adminBanquet from './admin-banquet'
+import adminNews from './admin-news'
+import adminGallery from './admin-gallery'
+import adminFaq from './admin-faq'
 
 const app = new Hono<{ Bindings: Bindings }>()
 
@@ -14,6 +18,10 @@ app.route('/main-images', adminMainImages)
 app.route('/commitment', adminCommitment)
 app.route('/greeting', adminGreeting)
 app.route('/menu', adminMenu)
+app.route('/banquet', adminBanquet)
+app.route('/news', adminNews)
+app.route('/gallery', adminGallery)
+app.route('/faq', adminFaq)
 
 // Login page
 app.get('/login', async (c) => {
