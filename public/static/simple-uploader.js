@@ -51,7 +51,7 @@ function addSimpleUploader(inputId, options = {}) {
       const formData = new FormData();
       formData.append('file', file);
 
-      const response = await axios.post('/admin/upload/api', formData, {
+      const response = await axios.post('/admin/api/upload', formData, {
         headers: { 'Content-Type': 'multipart/form-data' },
         onUploadProgress: (e) => {
           const percent = Math.round((e.loaded * 100) / e.total);

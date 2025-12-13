@@ -607,5 +607,6 @@ app.route('/api/banquet', adminBanquet)
 app.route('/api/news', adminNews)
 app.route('/api/gallery', adminGallery)
 app.route('/api/faq', adminFaq)
+app.route('/api/upload', adminUpload)
 
 export default app
