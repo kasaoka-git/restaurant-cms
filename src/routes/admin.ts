@@ -1,6 +1,7 @@
 import { Hono } from 'hono'
 import type { Bindings } from '../types'
 import { hashPassword, verifyPassword, createSession, getSession, destroySession, requireAuth } from '../utils/auth'
+import { getAdminLayout } from '../utils/admin-layout'
 import adminMainImages from './admin-main-images'
 import adminCommitment from './admin-commitment'
 import adminGreeting from './admin-greeting'
@@ -105,34 +106,8 @@ app.get('/logout', async (c) => {
 
 // Dashboard (protected)
 app.get('/dashboard', requireAuth, async (c) => {
-  const session = c.get('session');
-
-  return c.html(`
-    <!DOCTYPE html>
-    <html lang="ja">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>管理画面ダッシュボード</title>
-        <script src="https://cdn.tailwindcss.com"></script>
-        <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet">
-    </head>
-    <body class="bg-gray-100">
-        <!-- Header -->
-        <nav class="bg-white shadow-md">
-            <div class="container mx-auto px-4 py-4 flex justify-between items-center">
-                <h1 class="text-2xl font-bold text-gray-800">管理画面</h1>
-                <div class="flex items-center space-x-4">
-                    <span class="text-gray-600">ようこそ、${session.username}さん</span>
-                    <a href="/admin/logout" class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition">
-                        ログアウト
-                    </a>
-                </div>
-            </div>
-        </nav>
-
-        <!-- Main Content -->
-        <div class="container mx-auto px-4 py-8">
+  const content = `
+        <div>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 
                 <!-- Store Info Card -->
@@ -233,9 +208,9 @@ app.get('/dashboard', requireAuth, async (c) => {
                 </div>
             </div>
         </div>
-    </body>
-    </html>
-  `);
+  `;
+
+  return c.html(getAdminLayout(content, 'dashboard', 'ダッシュボード'));
 })
 
 // Store Info Editor (protected)

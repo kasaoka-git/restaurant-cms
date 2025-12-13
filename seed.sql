@@ -44,11 +44,39 @@ INSERT OR IGNORE INTO greeting (title, message) VALUES (
 どうぞごゆっくりとお楽しみくださいませ。'
 );
 
+-- サンプルメインイメージ（ダミー画像URL）
+INSERT OR IGNORE INTO main_images (media_type, media_url, display_order) VALUES 
+  ('image', 'https://images.unsplash.com/photo-1579027989536-b7b1f875659b?w=1200', 1),
+  ('image', 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=1200', 2),
+  ('image', 'https://images.unsplash.com/photo-1514933651103-005eec06c04b?w=1200', 3);
+
 -- サンプルこだわり情報
-INSERT OR IGNORE INTO commitment_items (title, description, display_order) VALUES 
-  ('厳選された旬の食材', '全国各地から取り寄せた旬の食材を使用。季節の味わいをお楽しみいただけます。', 1),
-  ('伝統の技', '長年培った伝統的な技法で、素材の味を最大限に引き出します。', 2),
-  ('個室完備', '大切な方とのお食事に最適な、落ち着いた雰囲気の個室をご用意しております。', 3);
+INSERT OR IGNORE INTO commitment_items (title, description, display_order, image_url) VALUES 
+  ('厳選された旬の食材', '全国各地から取り寄せた旬の食材を使用。季節の味わいをお楽しみいただけます。', 1, 'https://images.unsplash.com/photo-1511910849309-0dffb8785146?w=400'),
+  ('伝統の技', '長年培った伝統的な技法で、素材の味を最大限に引き出します。', 2, 'https://images.unsplash.com/photo-1579584425555-c3ce17fd4351?w=400'),
+  ('個室完備', '大切な方とのお食事に最適な、落ち着いた雰囲気の個室をご用意しております。', 3, 'https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=400'),
+  ('厳選された日本酒', '全国の蔵元から厳選した日本酒を取り揃えております。', 4, 'https://images.unsplash.com/photo-1545828106-53b0a1dee0d0?w=400');
+
+-- サンプルメニュー画像
+INSERT OR IGNORE INTO menu_images (image_url, display_order) VALUES 
+  ('https://images.unsplash.com/photo-1580822184713-fc5400e7fe10?w=800', 1),
+  ('https://images.unsplash.com/photo-1579584425555-c3ce17fd4351?w=800', 2),
+  ('https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=800', 3);
+
+-- サンプル宴会コース
+INSERT OR IGNORE INTO banquet_courses (course_name, course_description, display_order, image_url) VALUES 
+  ('季節の懐石コース', '旬の食材を使った全8品の懐石コース。お一人様 12,000円（税込）', 1, 'https://images.unsplash.com/photo-1579027989536-b7b1f875659b?w=600'),
+  ('特選会席コース', '厳選食材を贅沢に使用した全10品のコース。お一人様 18,000円（税込）', 2, 'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=600'),
+  ('おまかせコース', '料理長おまかせの特別コース。お一人様 25,000円（税込）', 3, 'https://images.unsplash.com/photo-1514933651103-005eec06c04b?w=600');
+
+-- サンプルギャラリー
+INSERT OR IGNORE INTO gallery (image_url, title, description, display_order) VALUES 
+  ('https://images.unsplash.com/photo-1579027989536-b7b1f875659b?w=600', '季節の前菜', '旬の食材を美しく盛り付けた前菜', 1),
+  ('https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=600', 'お造り', '新鮮な魚介類のお造り盛り合わせ', 2),
+  ('https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=600', '焼き物', '旬の魚を使った焼き物', 3),
+  ('https://images.unsplash.com/photo-1580822184713-fc5400e7fe10?w=600', '揚げ物', 'サクサクの天ぷら', 4),
+  ('https://images.unsplash.com/photo-1511910849309-0dffb8785146?w=600', 'お食事', '季節の炊き込みご飯', 5),
+  ('https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=600', '店内の様子', '落ち着いた雰囲気の店内', 6);
 
 -- サンプル新着情報
 INSERT OR IGNORE INTO news (title, content, published_date) VALUES 

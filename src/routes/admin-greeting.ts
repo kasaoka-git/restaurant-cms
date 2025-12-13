@@ -1,6 +1,7 @@
 import { Hono } from 'hono'
 import type { Bindings, Greeting } from '../types'
 import { requireAuth } from '../utils/auth'
+import { getAdminLayout } from '../utils/admin-layout'
 
 const app = new Hono<{ Bindings: Bindings }>()
 
@@ -10,34 +11,8 @@ app.get('/', requireAuth, async (c) => {
     'SELECT * FROM greeting LIMIT 1'
   ).first<Greeting>();
 
-  return c.html(`
-    <!DOCTYPE html>
-    <html lang="ja">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>ご挨拶編集</title>
-        <script src="https://cdn.tailwindcss.com"></script>
-        <link href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" rel="stylesheet">
-    </head>
-    <body class="bg-gray-100">
-        <!-- Header -->
-        <nav class="bg-white shadow-md">
-            <div class="container mx-auto px-4 py-4 flex justify-between items-center">
-                <div class="flex items-center space-x-4">
-                    <a href="/admin/dashboard" class="text-gray-600 hover:text-gray-800">
-                        <i class="fas fa-arrow-left"></i> ダッシュボードに戻る
-                    </a>
-                    <h1 class="text-2xl font-bold text-gray-800">ご挨拶編集</h1>
-                </div>
-                <a href="/admin/logout" class="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition">
-                    ログアウト
-                </a>
-            </div>
-        </nav>
-
-        <!-- Main Content -->
-        <div class="container mx-auto px-4 py-8 max-w-4xl">
+  const content = `
+        <div class="max-w-4xl mx-auto">
             <form id="greeting-form" class="bg-white p-8 rounded-lg shadow space-y-6">
                 
                 <div>
@@ -114,9 +89,9 @@ app.get('/', requireAuth, async (c) => {
             }
           });
         </script>
-    </body>
-    </html>
-  `);
+  `;
+
+  return c.html(getAdminLayout(content, 'greeting', 'ご挨拶編集'));
 })
 
 // API: Save greeting
