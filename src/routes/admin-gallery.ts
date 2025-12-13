@@ -87,11 +87,34 @@ app.get('/', requireAuth, async (c) => {
                     <input type="hidden" id="item-id" name="id">
 
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">画像URL <span class="text-red-600">*</span></label>
-                        <input type="url" name="image_url" id="image-url" required 
-                               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                               placeholder="https://example.com/gallery-image.jpg">
-                        <p class="text-xs text-gray-500 mt-1">ギャラリー画像のURLを入力してください</p>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">ギャラリー画像 <span class="text-red-600">*</span></label>
+                        <p class="text-xs text-gray-500 mb-2">推奨サイズ: 1200px × 900px | 形式: JPEG/PNG | 最大: 10MB</p>
+                        
+                        <!-- Tab Navigation -->
+                        <div class="flex space-x-2 mb-4 border-b">
+                            <button type="button" onclick="switchGalleryTab('upload')" id="tab-upload"
+                                    class="px-4 py-2 border-b-2 border-blue-600 text-blue-600 font-medium">
+                                アップロード
+                            </button>
+                            <button type="button" onclick="switchGalleryTab('url')" id="tab-url"
+                                    class="px-4 py-2 text-gray-500 font-medium">
+                                URLで指定
+                            </button>
+                        </div>
+
+                        <!-- Upload Tab -->
+                        <div id="upload-tab" class="space-y-3">
+                            <div id="image-url-upload-container"></div>
+                        </div>
+
+                        <!-- URL Tab -->
+                        <div id="url-tab" class="hidden space-y-3">
+                            <input type="url" id="image-url-input"
+                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                                   placeholder="https://example.com/gallery-image.jpg">
+                        </div>
+
+                        <input type="hidden" name="image_url" id="image-url" required>
                     </div>
 
                     <div>
@@ -124,8 +147,43 @@ app.get('/', requireAuth, async (c) => {
             </div>
         </div>
 
+        <script src="/static/simple-uploader.js"></script>
         <script>
           let isEditMode = false;
+
+          // Initialize uploader
+          addSimpleUploader('image-url', { acceptVideos: false });
+
+          // Tab switching
+          function switchGalleryTab(tab) {
+            const uploadTab = document.getElementById('upload-tab');
+            const urlTab = document.getElementById('url-tab');
+            const uploadBtn = document.getElementById('tab-upload');
+            const urlBtn = document.getElementById('tab-url');
+            const imageUrlInput = document.getElementById('image-url-input');
+
+            if (tab === 'upload') {
+              uploadTab.classList.remove('hidden');
+              urlTab.classList.add('hidden');
+              uploadBtn.classList.add('border-blue-600', 'text-blue-600');
+              uploadBtn.classList.remove('text-gray-500');
+              urlBtn.classList.remove('border-blue-600', 'text-blue-600');
+              urlBtn.classList.add('text-gray-500');
+              imageUrlInput.value = '';
+            } else {
+              uploadTab.classList.add('hidden');
+              urlTab.classList.remove('hidden');
+              urlBtn.classList.add('border-blue-600', 'text-blue-600');
+              urlBtn.classList.remove('text-gray-500');
+              uploadBtn.classList.remove('border-blue-600', 'text-blue-600');
+              uploadBtn.classList.add('text-gray-500');
+            }
+          }
+
+          // Sync URL input with hidden field
+          document.getElementById('image-url-input').addEventListener('input', (e) => {
+            document.getElementById('image-url').value = e.target.value;
+          });
 
           // Initialize Sortable
           const itemsList = document.getElementById('items-list');

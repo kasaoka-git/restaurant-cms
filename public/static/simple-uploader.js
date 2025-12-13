@@ -6,7 +6,7 @@ function addSimpleUploader(inputId, options = {}) {
 
   const containerId = inputId + '-upload-container';
   const accept = options.acceptVideos ? 'image/*,video/*' : 'image/*';
-  const maxSize = options.acceptVideos ? 100 * 1024 * 1024 : 10 * 1024 * 1024;
+  const maxSize = options.maxSize || (options.acceptVideos ? 100 * 1024 * 1024 : 10 * 1024 * 1024);
 
   // Create upload UI
   const uploadHTML = `

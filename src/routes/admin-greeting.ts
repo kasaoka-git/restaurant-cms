@@ -33,11 +33,35 @@ app.get('/', requireAuth, async (c) => {
                 </div>
 
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">画像URL</label>
-                    <input type="url" name="image_url" id="image-url" value="${greeting?.image_url || ''}"
-                           class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                           placeholder="https://example.com/chef-photo.jpg">
-                    <p class="text-xs text-gray-500 mt-1">料理長の写真などがある場合はURLを入力してください（任意）</p>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">料理長の写真</label>
+                    <p class="text-xs text-gray-500 mb-2">推奨サイズ: 800px × 800px（正方形） | 形式: JPEG/PNG | 最大: 10MB</p>
+                    
+                    <!-- Tab Navigation -->
+                    <div class="flex space-x-2 mb-4 border-b">
+                        <button type="button" onclick="switchGreetingTab('upload')" id="tab-upload"
+                                class="px-4 py-2 border-b-2 border-blue-600 text-blue-600 font-medium">
+                            アップロード
+                        </button>
+                        <button type="button" onclick="switchGreetingTab('url')" id="tab-url"
+                                class="px-4 py-2 text-gray-500 font-medium">
+                            URLで指定
+                        </button>
+                    </div>
+
+                    <!-- Upload Tab -->
+                    <div id="upload-tab" class="space-y-3">
+                        <div id="image-url-upload-container"></div>
+                    </div>
+
+                    <!-- URL Tab -->
+                    <div id="url-tab" class="hidden space-y-3">
+                        <input type="url" id="image-url-input"
+                               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                               placeholder="https://example.com/chef-photo.jpg">
+                    </div>
+
+                    <input type="hidden" name="image_url" id="image-url" value="${greeting?.image_url || ''}">
+
                     ${greeting?.image_url ? `
                     <div class="mt-4">
                         <img src="${greeting.image_url}" alt="プレビュー" class="w-48 h-48 rounded-full object-cover">
@@ -60,6 +84,7 @@ app.get('/', requireAuth, async (c) => {
         </div>
 
         <script src="https://cdn.jsdelivr.net/npm/axios@1.6.0/dist/axios.min.js"></script>
+        <script src="/static/simple-uploader.js"></script>
         <script>
           const messageTextarea = document.getElementById('message');
           const charCount = document.getElementById('char-count');
@@ -70,6 +95,40 @@ app.get('/', requireAuth, async (c) => {
 
           messageTextarea.addEventListener('input', updateCharCount);
           updateCharCount();
+
+          // Initialize uploader
+          addSimpleUploader('image-url', { acceptVideos: false });
+
+          // Tab switching
+          function switchGreetingTab(tab) {
+            const uploadTab = document.getElementById('upload-tab');
+            const urlTab = document.getElementById('url-tab');
+            const uploadBtn = document.getElementById('tab-upload');
+            const urlBtn = document.getElementById('tab-url');
+            const imageUrlInput = document.getElementById('image-url-input');
+
+            if (tab === 'upload') {
+              uploadTab.classList.remove('hidden');
+              urlTab.classList.add('hidden');
+              uploadBtn.classList.add('border-blue-600', 'text-blue-600');
+              uploadBtn.classList.remove('text-gray-500');
+              urlBtn.classList.remove('border-blue-600', 'text-blue-600');
+              urlBtn.classList.add('text-gray-500');
+              imageUrlInput.value = '';
+            } else {
+              uploadTab.classList.add('hidden');
+              urlTab.classList.remove('hidden');
+              urlBtn.classList.add('border-blue-600', 'text-blue-600');
+              urlBtn.classList.remove('text-gray-500');
+              uploadBtn.classList.remove('border-blue-600', 'text-blue-600');
+              uploadBtn.classList.add('text-gray-500');
+            }
+          }
+
+          // Sync URL input with hidden field
+          document.getElementById('image-url-input').addEventListener('input', (e) => {
+            document.getElementById('image-url').value = e.target.value;
+          });
 
           document.getElementById('greeting-form').addEventListener('submit', async (e) => {
             e.preventDefault();
