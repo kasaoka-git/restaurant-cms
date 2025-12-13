@@ -56,9 +56,11 @@ app.post('/', requireAuth, async (c) => {
       },
     })
 
-    // Generate public URL (for local development, use placeholder)
-    // In production, this would be your R2 public URL or custom domain
-    const publicUrl = `https://uploads.webapp.example.com/${key}`
+    // Generate public URL
+    // For development: use local endpoint
+    // For production: use R2 public URL or custom domain
+    const host = new URL(c.req.url).origin
+    const publicUrl = `${host}/uploads/${key}`
 
     return c.json({ 
       success: true, 
@@ -96,6 +98,31 @@ app.delete('/:key', requireAuth, async (c) => {
   }
 })
 
+// Serve files from R2 (for development and production)
+app.get('/:folder/:filename', async (c) => {
+  try {
+    const folder = c.req.param('folder')
+    const filename = c.req.param('filename')
+    const key = `${folder}/${filename}`
+
+    const object = await c.env.UPLOADS.get(key)
+    
+    if (!object) {
+      return c.notFound()
+    }
+
+    return new Response(object.body, {
+      headers: {
+        'Content-Type': object.httpMetadata?.contentType || 'application/octet-stream',
+        'Cache-Control': 'public, max-age=31536000',
+      },
+    })
+  } catch (error) {
+    console.error('File serve error:', error)
+    return c.notFound()
+  }
+})
+
 // List files in R2 (for debugging)
 app.get('/api/list', requireAuth, async (c) => {
   try {
@@ -111,7 +138,7 @@ app.get('/api/list', requireAuth, async (c) => {
       key: obj.key,
       size: obj.size,
       uploaded: obj.uploaded,
-      url: `https://uploads.webapp.example.com/${obj.key}`
+      url: `/uploads/${obj.key}`
     }))
 
     return c.json({ 
