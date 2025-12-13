@@ -1,12 +1,24 @@
 import { Hono } from 'hono'
-import { renderer } from './renderer'
+import { cors } from 'hono/cors'
+import { serveStatic } from 'hono/cloudflare-workers'
+import type { Bindings } from './types'
 
-const app = new Hono()
+// Import routes
+import adminRoutes from './routes/admin'
+import apiRoutes from './routes/api'
+import publicRoutes from './routes/public'
 
-app.use(renderer)
+const app = new Hono<{ Bindings: Bindings }>()
 
-app.get('/', (c) => {
-  return c.render(<h1>Hello!</h1>)
-})
+// CORS middleware for API routes
+app.use('/api/*', cors())
+
+// Serve static files
+app.use('/static/*', serveStatic({ root: './' }))
+
+// Mount routes
+app.route('/admin', adminRoutes)
+app.route('/api', apiRoutes)
+app.route('/', publicRoutes)
 
 export default app

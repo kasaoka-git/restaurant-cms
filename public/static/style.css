@@ -1,1 +1,151 @@
-h1 { font-family: Arial, Helvetica, sans-serif; }
+/* Custom styles for Japanese restaurant website */
+
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600;700&family=Noto+Sans+JP:wght@300;400;500;700&display=swap');
+
+body {
+  font-family: 'Noto Sans JP', sans-serif;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Noto Serif JP', serif;
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Hero section video and image styling */
+.hero-swiper .swiper-slide {
+  position: relative;
+}
+
+.hero-swiper .swiper-slide::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(to bottom, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.1) 50%, rgba(0,0,0,0.3) 100%);
+}
+
+/* Swiper button customization */
+.swiper-button-prev,
+.swiper-button-next {
+  color: white !important;
+  background: rgba(139, 69, 19, 0.7);
+  padding: 20px;
+  border-radius: 50%;
+  width: 44px !important;
+  height: 44px !important;
+}
+
+.swiper-button-prev:hover,
+.swiper-button-next:hover {
+  background: rgba(139, 69, 19, 0.9);
+}
+
+.swiper-button-prev::after,
+.swiper-button-next::after {
+  font-size: 20px !important;
+}
+
+/* Swiper pagination customization */
+.swiper-pagination-bullet {
+  background: white !important;
+  opacity: 0.5 !important;
+}
+
+.swiper-pagination-bullet-active {
+  opacity: 1 !important;
+  background: #8B4513 !important;
+}
+
+/* Section spacing */
+section {
+  scroll-margin-top: 80px;
+}
+
+/* Card hover effects */
+.hover\:shadow-xl {
+  transition: box-shadow 0.3s ease;
+}
+
+/* Image modal animation */
+#image-modal {
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Menu swiper specific styles */
+.menu-swiper {
+  padding: 20px 50px;
+}
+
+.menu-swiper .swiper-slide img {
+  max-height: 600px;
+  width: auto;
+  margin: 0 auto;
+}
+
+/* FAQ toggle icon animation */
+#faq-list button i {
+  transition: transform 0.3s ease;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .swiper-button-prev,
+  .swiper-button-next {
+    display: none !important;
+  }
+  
+  .menu-swiper {
+    padding: 20px 10px;
+  }
+}
+
+/* Loading animation */
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+.loading {
+  animation: shimmer 2s infinite;
+  background: linear-gradient(to right, #f0f0f0 4%, #e8e8e8 25%, #f0f0f0 36%);
+  background-size: 1000px 100%;
+}
+
+/* Premium styling for high-end restaurant */
+.text-primary {
+  color: #8B4513;
+}
+
+.bg-primary {
+  background-color: #8B4513;
+}
+
+.border-primary {
+  border-color: #8B4513;
+}
+
+/* Elegant transitions */
+* {
+  transition-property: color, background-color, border-color, transform, box-shadow;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
