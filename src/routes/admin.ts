@@ -3,12 +3,14 @@ import type { Bindings } from '../types'
 import { hashPassword, verifyPassword, createSession, getSession, destroySession, requireAuth } from '../utils/auth'
 import adminMainImages from './admin-main-images'
 import adminCommitment from './admin-commitment'
+import adminGreeting from './admin-greeting'
 
 const app = new Hono<{ Bindings: Bindings }>()
 
 // Mount sub-routes
 app.route('/main-images', adminMainImages)
 app.route('/commitment', adminCommitment)
+app.route('/greeting', adminGreeting)
 
 // Login page
 app.get('/login', async (c) => {
