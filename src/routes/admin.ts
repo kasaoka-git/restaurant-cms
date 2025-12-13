@@ -5,6 +5,7 @@ import { getAdminLayout } from '../utils/admin-layout'
 import adminMainImages from './admin-main-images'
 import adminCommitment from './admin-commitment'
 import adminGreeting from './admin-greeting'
+import adminMenu from './admin-menu'
 
 const app = new Hono<{ Bindings: Bindings }>()
 
@@ -12,6 +13,7 @@ const app = new Hono<{ Bindings: Bindings }>()
 app.route('/main-images', adminMainImages)
 app.route('/commitment', adminCommitment)
 app.route('/greeting', adminGreeting)
+app.route('/menu', adminMenu)
 
 // Login page
 app.get('/login', async (c) => {
