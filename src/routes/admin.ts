@@ -10,6 +10,7 @@ import adminBanquet from './admin-banquet'
 import adminNews from './admin-news'
 import adminGallery from './admin-gallery'
 import adminFaq from './admin-faq'
+import adminUpload from './admin-upload'
 
 const app = new Hono<{ Bindings: Bindings }>()
 
@@ -22,6 +23,7 @@ app.route('/banquet', adminBanquet)
 app.route('/news', adminNews)
 app.route('/gallery', adminGallery)
 app.route('/faq', adminFaq)
+app.route('/upload', adminUpload)
 
 // Login page
 app.get('/login', async (c) => {

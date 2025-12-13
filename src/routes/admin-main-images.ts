@@ -122,13 +122,36 @@ app.get('/', requireAuth, async (c) => {
                     </div>
 
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">画像/動画URL <span class="text-red-600">*</span></label>
-                        <input type="url" name="media_url" id="media-url" required 
-                               class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                               placeholder="https://example.com/image.jpg">
-                        <p class="text-xs text-gray-500 mt-1">
-                            画像または動画ファイルの完全なURLを入力してください
-                        </p>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">画像/動画 <span class="text-red-600">*</span></label>
+                        
+                        <!-- Tab Selection -->
+                        <div class="flex mb-4 border-b">
+                            <button type="button" onclick="switchTab('upload')" id="tab-upload" 
+                                    class="px-4 py-2 font-medium border-b-2 border-blue-600 text-blue-600">
+                                <i class="fas fa-upload mr-2"></i>アップロード
+                            </button>
+                            <button type="button" onclick="switchTab('url')" id="tab-url" 
+                                    class="px-4 py-2 font-medium text-gray-500 hover:text-gray-700">
+                                <i class="fas fa-link mr-2"></i>URLで指定
+                            </button>
+                        </div>
+
+                        <!-- Upload Tab -->
+                        <div id="upload-tab" class="tab-content">
+                            <div id="media-upload-container"></div>
+                        </div>
+
+                        <!-- URL Tab -->
+                        <div id="url-tab" class="tab-content hidden">
+                            <input type="url" id="media-url-input" 
+                                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                                   placeholder="https://example.com/image.jpg">
+                            <p class="text-xs text-gray-500 mt-1">
+                                画像または動画ファイルの完全なURLを入力してください
+                            </p>
+                        </div>
+
+                        <input type="hidden" name="media_url" id="media-url" required>
                     </div>
 
                     <div class="flex space-x-4 pt-6">
@@ -149,6 +172,7 @@ app.get('/', requireAuth, async (c) => {
         <script src="https://cdn.jsdelivr.net/npm/axios@1.6.0/dist/axios.min.js"></script>
         <script>
           let isEditMode = false;
+          let uploader = null;
 
           // Initialize Sortable
           const imagesList = document.getElementById('images-list');
@@ -173,12 +197,80 @@ app.get('/', requireAuth, async (c) => {
             });
           }
 
+          // Tab switching
+          function switchTab(tab) {
+            const uploadTab = document.getElementById('upload-tab');
+            const urlTab = document.getElementById('url-tab');
+            const uploadBtn = document.getElementById('tab-upload');
+            const urlBtn = document.getElementById('tab-url');
+            const mediaUrlInput = document.getElementById('media-url-input');
+            const mediaUrlHidden = document.getElementById('media-url');
+
+            if (tab === 'upload') {
+              uploadTab.classList.remove('hidden');
+              urlTab.classList.add('hidden');
+              uploadBtn.classList.add('border-blue-600', 'text-blue-600');
+              uploadBtn.classList.remove('text-gray-500');
+              urlBtn.classList.remove('border-blue-600', 'text-blue-600');
+              urlBtn.classList.add('text-gray-500');
+              
+              // Clear URL input when switching to upload
+              mediaUrlInput.value = '';
+            } else {
+              uploadTab.classList.add('hidden');
+              urlTab.classList.remove('hidden');
+              urlBtn.classList.add('border-blue-600', 'text-blue-600');
+              urlBtn.classList.remove('text-gray-500');
+              uploadBtn.classList.remove('border-blue-600', 'text-blue-600');
+              uploadBtn.classList.add('text-gray-500');
+            }
+          }
+
+          // Sync URL input with hidden field
+          document.getElementById('media-url-input').addEventListener('input', (e) => {
+            document.getElementById('media-url').value = e.target.value;
+          });
+
           function openAddModal() {
             isEditMode = false;
             document.getElementById('modal-title').textContent = 'メインイメージを追加';
             document.getElementById('image-form').reset();
             document.getElementById('image-id').value = '';
             document.getElementById('modal').classList.remove('hidden');
+            
+            // Initialize uploader
+            initUploader();
+          }
+
+          function initUploader() {
+            const container = document.getElementById('media-upload-container');
+            if (!container) return;
+
+            uploader = new MediaUploader({
+              acceptImages: true,
+              acceptVideos: true,
+              maxImageSize: 10 * 1024 * 1024, // 10MB
+              maxVideoSize: 100 * 1024 * 1024, // 100MB
+              onUploadStart: (file) => {
+                console.log('Upload started:', file.name);
+              },
+              onUploadProgress: (percent) => {
+                console.log('Upload progress:', percent + '%');
+              },
+              onUploadComplete: (result) => {
+                document.getElementById('media-url').value = result.url;
+                console.log('Upload complete:', result);
+              },
+              onUploadError: (error) => {
+                alert('アップロードエラー: ' + error);
+              }
+            });
+
+            uploader.createUploadButton('media-upload-container', {
+              name: 'media_url',
+              buttonText: 'ファイルを選択',
+              showPreview: true
+            });
           }
 
           function editImage(id, mediaType, mediaUrl, displayOrder) {
@@ -187,7 +279,14 @@ app.get('/', requireAuth, async (c) => {
             document.getElementById('image-id').value = id;
             document.getElementById('media-type').value = mediaType;
             document.getElementById('media-url').value = mediaUrl;
+            document.getElementById('media-url-input').value = mediaUrl;
             document.getElementById('modal').classList.remove('hidden');
+            
+            // Initialize uploader
+            initUploader();
+            
+            // Switch to URL tab and show existing URL
+            switchTab('url');
           }
 
           function closeModal() {
