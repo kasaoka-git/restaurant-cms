@@ -123,6 +123,10 @@ app.get('/', requireAuth, async (c) => {
 
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">PC用画像/動画 <span class="text-red-600">*</span></label>
+                        <p class="text-xs text-gray-500 mb-3">
+                            <i class="fas fa-info-circle mr-1"></i>
+                            <strong>推奨:</strong> 画像 1920×1080px (16:9横長) | 動画 1920×1080px 30fps, 最大100MB, 10-30秒
+                        </p>
                         
                         <!-- Tab Selection -->
                         <div class="flex mb-4 border-b">
@@ -158,7 +162,8 @@ app.get('/', requireAuth, async (c) => {
                         <label class="block text-sm font-medium text-gray-700 mb-2">スマホ用画像/動画（任意）</label>
                         <p class="text-xs text-gray-500 mb-3">
                             <i class="fas fa-info-circle mr-1"></i>
-                            スマホで表示する専用の画像/動画を設定できます。未設定の場合はPC用画像が表示されます。
+                            スマホで表示する専用の画像/動画を設定できます。未設定の場合はPC用画像が表示されます。<br>
+                            <strong>推奨:</strong> 画像 1080×1920px (9:16縦長) | 動画 1080×1920px 30fps, 最大50MB, 10-20秒
                         </p>
                         
                         <!-- Mobile Tab Selection -->
