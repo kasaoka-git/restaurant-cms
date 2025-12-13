@@ -1,8 +1,12 @@
 import { Hono } from 'hono'
 import type { Bindings } from '../types'
 import { hashPassword, verifyPassword, createSession, getSession, destroySession, requireAuth } from '../utils/auth'
+import adminMainImages from './admin-main-images'
 
 const app = new Hono<{ Bindings: Bindings }>()
+
+// Mount sub-routes
+app.route('/main-images', adminMainImages)
 
 // Login page
 app.get('/login', async (c) => {
