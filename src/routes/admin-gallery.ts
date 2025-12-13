@@ -155,6 +155,9 @@ app.get('/', requireAuth, async (c) => {
             document.getElementById('item-form').reset();
             document.getElementById('item-id').value = '';
             document.getElementById('modal').classList.remove('hidden');
+            
+            // Initialize uploader
+            setTimeout(() => addSimpleUploader('image-url', { acceptVideos: false }), 100);
           }
 
           function editItem(item) {

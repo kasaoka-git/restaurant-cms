@@ -189,6 +189,9 @@ app.get('/', requireAuth, async (c) => {
             document.getElementById('item-id').value = '';
             document.getElementById('is-visible').checked = true;
             document.getElementById('modal').classList.remove('hidden');
+            
+            // Initialize uploader
+            setTimeout(() => addSimpleUploader('image-url', { acceptVideos: false }), 100);
           }
 
           function editItem(item) {

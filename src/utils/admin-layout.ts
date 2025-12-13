@@ -142,6 +142,7 @@ export function getAdminLayout(content: string, currentPage: string = '', pageTi
 
         <script src="https://cdn.jsdelivr.net/npm/axios@1.6.0/dist/axios.min.js"></script>
         <script src="/static/upload.js"></script>
+        <script src="/static/simple-uploader.js"></script>
     </body>
     </html>
   `;
