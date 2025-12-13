@@ -61,7 +61,7 @@ app.get('/banquet-courses', async (c) => {
 app.get('/news', async (c) => {
   const limit = c.req.query('limit') || '5';
   const { results } = await c.env.DB.prepare(
-    `SELECT * FROM news WHERE is_visible = 1 ORDER BY published_at DESC LIMIT ?`
+    `SELECT * FROM news WHERE is_visible = 1 ORDER BY published_date DESC LIMIT ?`
   ).bind(parseInt(limit)).all();
   
   return c.json(results);

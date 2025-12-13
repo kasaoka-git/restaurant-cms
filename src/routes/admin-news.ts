@@ -8,7 +8,7 @@ const app = new Hono<{ Bindings: Bindings }>()
 // News List Page
 app.get('/', requireAuth, async (c) => {
   const { results } = await c.env.DB.prepare(
-    'SELECT * FROM news ORDER BY published_at DESC'
+    'SELECT * FROM news ORDER BY published_date DESC'
   ).all<News>();
 
   const content = `
@@ -40,7 +40,7 @@ app.get('/', requireAuth, async (c) => {
                     <div class="flex items-start justify-between">
                         <div class="flex-1">
                             <div class="flex items-center space-x-3 mb-2">
-                                <span class="text-sm text-gray-500">${new Date(item.published_at).toLocaleDateString('ja-JP')}</span>
+                                <span class="text-sm text-gray-500">${new Date(item.published_date).toLocaleDateString('ja-JP')}</span>
                                 <span class="px-3 py-1 text-sm rounded-full ${item.is_visible ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}">
                                     ${item.is_visible ? '表示中' : '非表示'}
                                 </span>
@@ -104,7 +104,7 @@ app.get('/', requireAuth, async (c) => {
 
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-2">公開日 <span class="text-red-600">*</span></label>
-                        <input type="date" name="published_at" id="published-at" required
+                        <input type="date" name="published_date" id="published-date" required
                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500">
                     </div>
 
@@ -133,14 +133,14 @@ app.get('/', requireAuth, async (c) => {
 
           // Set default date to today
           const today = new Date().toISOString().split('T')[0];
-          document.getElementById('published-at').value = today;
+          document.getElementById('published-date').value = today;
 
           function openAddModal() {
             isEditMode = false;
             document.getElementById('modal-title').textContent = 'お知らせを追加';
             document.getElementById('item-form').reset();
             document.getElementById('item-id').value = '';
-            document.getElementById('published-at').value = today;
+            document.getElementById('published-date').value = today;
             document.getElementById('is-visible').checked = true;
             document.getElementById('modal').classList.remove('hidden');
           }
@@ -151,7 +151,7 @@ app.get('/', requireAuth, async (c) => {
             document.getElementById('item-id').value = item.id;
             document.getElementById('title').value = item.title || '';
             document.getElementById('content').value = item.content || '';
-            document.getElementById('published-at').value = item.published_at?.split('T')[0] || today;
+            document.getElementById('published-date').value = item.published_date?.split('T')[0] || today;
             document.getElementById('is-visible').checked = item.is_visible == 1;
             document.getElementById('modal').classList.remove('hidden');
           }
@@ -179,7 +179,7 @@ app.get('/', requireAuth, async (c) => {
             const data = {
               title: formData.get('title'),
               content: formData.get('content'),
-              published_at: formData.get('published_at'),
+              published_date: formData.get('published_date'),
               is_visible: formData.get('is_visible') ? 1 : 0
             };
             
@@ -215,9 +215,9 @@ app.post('/api', requireAuth, async (c) => {
   const data = await c.req.json();
   
   await c.env.DB.prepare(`
-    INSERT INTO news (title, content, published_at, is_visible)
+    INSERT INTO news (title, content, published_date, is_visible)
     VALUES (?, ?, ?, ?)
-  `).bind(data.title, data.content, data.published_at, data.is_visible || 1).run();
+  `).bind(data.title, data.content, data.published_date, data.is_visible || 1).run();
   
   return c.json({ success: true });
 })
@@ -229,9 +229,9 @@ app.put('/api/:id', requireAuth, async (c) => {
   
   await c.env.DB.prepare(`
     UPDATE news 
-    SET title = ?, content = ?, published_at = ?, is_visible = ?
+    SET title = ?, content = ?, published_date = ?, is_visible = ?
     WHERE id = ?
-  `).bind(data.title, data.content, data.published_at, data.is_visible || 1, id).run();
+  `).bind(data.title, data.content, data.published_date, data.is_visible || 1, id).run();
   
   return c.json({ success: true });
 })
