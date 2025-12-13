@@ -116,11 +116,13 @@ async function loadStoreInfo() {
         <iframe 
           src="${store.contact_form_url}" 
           width="100%" 
-          height="600" 
+          height="2000" 
           frameborder="0" 
           marginheight="0" 
           marginwidth="0"
-          class="rounded-lg shadow">
+          scrolling="no"
+          class="rounded-lg shadow"
+          style="overflow: hidden; min-height: 1500px;">
           読み込んでいます…
         </iframe>
       `;
