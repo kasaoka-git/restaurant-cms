@@ -1,0 +1,9 @@
+name = "restaurant-cms"
+compatibility_date = "2025-12-13"
+pages_build_output_dir = "dist"
+
+[build]
+command = "npm run build"
+
+[build.upload]
+format = "modules"
